@@ -1,0 +1,41 @@
+plugins {
+    id 'java-library'
+}
+
+// Everything that needs no Minecraft: the client-server messages, despawn clocks, blinking, time texts and the
+// translations. Compiled for Java 17 here (the bands and the tests use it); common-j8 compiles the same sources
+// to Java 8 for the universal jars.
+base {
+    archivesName = "despawn-indicator-common"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 17
+    options.encoding = 'UTF-8'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+processResources {
+    inputs.property "version", project.mod_version
+    filesMatching("despawnindicator-build.properties") {
+        expand "version": project.mod_version
+    }
+}
+
+test {
+    useJUnitPlatform()
+}

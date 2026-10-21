@@ -1,0 +1,6 @@
+{
+  "command.despawnindicator.status.title": "Despawn Indicator %s",
+  "command.despawnindicator.status.players": "Jogadores com o mod: %s de %s online. Eles veem exatamente quando os itens no chão somem.",
+  "command.despawnindicator.status.lifetime": "Itens largados somem aqui depois de %s.",
+  "modmenu.descriptionTranslation.despawnindicator": "Itens no chão piscam antes de sumir e mostram o tempo restante. Com o mod também no servidor, o tempo é exato."
+}

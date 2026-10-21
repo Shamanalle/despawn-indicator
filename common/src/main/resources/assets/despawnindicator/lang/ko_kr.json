@@ -1,0 +1,6 @@
+{
+  "command.despawnindicator.status.title": "Despawn Indicator %s",
+  "command.despawnindicator.status.players": "모드가 있는 플레이어: 접속 중 %2$s명 중 %1$s명. 바닥의 아이템이 언제 사라지는지 정확히 봅니다.",
+  "command.despawnindicator.status.lifetime": "버린 아이템은 여기서 %s 후에 사라집니다.",
+  "modmenu.descriptionTranslation.despawnindicator": "바닥의 아이템이 사라지기 전에 깜박이고 남은 시간을 보여 줍니다. 서버에도 모드가 있으면 시간이 정확합니다."
+}

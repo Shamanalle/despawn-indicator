@@ -1,0 +1,92 @@
+name: "🐞 Bug report / Ошибка"
+description: "Something is broken or the game crashes / Что-то работает не так или игра падает"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report! Exact versions and steps make it much faster to fix.
+        Спасибо за отчёт! Чем точнее версии и шаги, тем быстрее получится исправить.
+
+  - type: dropdown
+    id: side
+    attributes:
+      label: "Where is Despawn Indicator installed? / Где установлен Despawn Indicator?"
+      options:
+        - "Client only / Только клиент"
+        - "Server only / Только сервер"
+        - "Client and server / Клиент и сервер"
+        - "Singleplayer / Одиночная игра"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: loader
+    attributes:
+      label: "Loader / Загрузчик"
+      options:
+        - Fabric
+        - Quilt
+        - Forge
+        - NeoForge
+        - Paper / Folia / Spigot (server plugin / серверный плагин)
+    validations:
+      required: true
+
+  - type: input
+    id: mc_version
+    attributes:
+      label: "Minecraft version / Версия Minecraft"
+      placeholder: "1.21.8"
+    validations:
+      required: true
+
+  - type: input
+    id: mod_version
+    attributes:
+      label: "Mod version / Версия мода"
+      description: "The file name from your mods or plugins folder / Имя файла из папки mods или plugins"
+      placeholder: "despawn-indicator-fabric-0.1.0+mc1.21-26.x.jar"
+    validations:
+      required: true
+
+  - type: input
+    id: loader_version
+    attributes:
+      label: "Loader or server version / Версия загрузчика или ядра"
+      placeholder: "Fabric Loader 0.16.13, Fabric API 0.136.1+1.21.8 / NeoForge 21.1.172 / Paper 1.21.8 build 60"
+
+  - type: checkboxes
+    id: other_mods
+    attributes:
+      label: "Other mods that may matter / Другие моды, которые могут влиять"
+      options:
+        - label: "Shaders (Iris, Oculus) / Шейдеры (Iris, Oculus)"
+        - label: "Sodium / Embeddium"
+        - label: "Item clearing, stacking or grave mods / Моды на очистку, склейку предметов или могилы"
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "What happened / Что случилось"
+      description: "What you expected and what actually happened / Что вы ожидали и что произошло на самом деле"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: "Steps to reproduce / Как воспроизвести"
+      placeholder: |
+        1. Join a server with the mod on both sides / Зайти на сервер с модом на обеих сторонах
+        2. Drop a stack of cobblestone, wait 4 minutes / Выбросить стак булыжника, подождать 4 минуты
+        3. Look at the item… / Посмотреть на предмет…
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Log or crash report / Лог или краш-репорт"
+      description: "logs/latest.log or crash-reports/…; a mclo.gs link is fine / logs/latest.log или crash-reports/…; можно ссылкой на mclo.gs"
+      render: text

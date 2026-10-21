@@ -1,0 +1,6 @@
+{
+  "command.despawnindicator.status.title": "Despawn Indicator %s",
+  "command.despawnindicator.status.players": "Graczy z modem: %s z %s online. Widzą dokładnie, kiedy znikną przedmioty na ziemi.",
+  "command.despawnindicator.status.lifetime": "Wyrzucone przedmioty znikają tu po %s.",
+  "modmenu.descriptionTranslation.despawnindicator": "Przedmioty na ziemi migają, zanim znikną, i pokazują pozostały czas. Gdy mod jest też na serwerze, czas jest dokładny."
+}

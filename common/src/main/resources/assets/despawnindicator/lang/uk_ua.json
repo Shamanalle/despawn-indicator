@@ -1,0 +1,6 @@
+{
+  "command.despawnindicator.status.title": "Despawn Indicator %s",
+  "command.despawnindicator.status.players": "Гравців із модом: %s з %s у мережі. Вони бачать точний час, коли зникнуть предмети на землі.",
+  "command.despawnindicator.status.lifetime": "Викинуті предмети зникають тут через %s.",
+  "modmenu.descriptionTranslation.despawnindicator": "Предмети на землі блимають перед зникненням і показують, скільки їм лишилося. Якщо мод стоїть і на сервері, час точний."
+}

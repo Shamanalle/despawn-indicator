@@ -1,0 +1,6 @@
+{
+  "command.despawnindicator.status.title": "Despawn Indicator %s",
+  "command.despawnindicator.status.players": "Spieler mit der Mod: %s von %s online. Sie sehen genau, wann Gegenstände am Boden verschwinden.",
+  "command.despawnindicator.status.lifetime": "Fallengelassene Gegenstände verschwinden hier nach %s.",
+  "modmenu.descriptionTranslation.despawnindicator": "Gegenstände am Boden blinken, bevor sie verschwinden, und zeigen die verbleibende Zeit. Ist die Mod auch auf dem Server, ist die Zeit genau."
+}
