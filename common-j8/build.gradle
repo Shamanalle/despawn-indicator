@@ -1,0 +1,29 @@
+plugins {
+    id 'java-library'
+}
+
+// The sources of ':common' compiled to Java 8 bytecode (see gradle/jabel.gradle): the classes every band of a
+// universal jar shares, and later the Bukkit plugin, which starts on Minecraft 1.16.5 and so on Java 8
+base {
+    archivesName = "despawn-indicator-common-j8"
+}
+
+repositories {
+    mavenCentral()
+}
+
+apply from: "${rootDir}/gradle/jabel.gradle"
+
+sourceSets {
+    main {
+        java.srcDir "${rootDir}/common/src/main/java"
+        resources.srcDir "${rootDir}/common/src/main/resources"
+    }
+}
+
+processResources {
+    inputs.property "version", project.mod_version
+    filesMatching("despawnindicator-build.properties") {
+        expand "version": project.mod_version
+    }
+}

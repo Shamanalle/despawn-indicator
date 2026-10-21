@@ -1,0 +1,6 @@
+{
+  "command.despawnindicator.status.title": "Despawn Indicator %s",
+  "command.despawnindicator.status.players": "Players with the mod: %s of %s online. They see exactly when items on the ground despawn.",
+  "command.despawnindicator.status.lifetime": "Dropped items despawn after %s here.",
+  "modmenu.descriptionTranslation.despawnindicator": "Items on the ground blink before they despawn and show the time left. With the mod on the server too, the time is exact."
+}

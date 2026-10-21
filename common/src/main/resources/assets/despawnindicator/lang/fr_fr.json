@@ -1,0 +1,6 @@
+{
+  "command.despawnindicator.status.title": "Despawn Indicator %s",
+  "command.despawnindicator.status.players": "Joueurs avec le mod : %s sur %s en ligne. Ils voient exactement quand les objets au sol disparaissent.",
+  "command.despawnindicator.status.lifetime": "Les objets lâchés disparaissent ici après %s.",
+  "modmenu.descriptionTranslation.despawnindicator": "Les objets au sol clignotent avant de disparaître et affichent le temps restant. Avec le mod aussi sur le serveur, le temps est exact."
+}

@@ -1,0 +1,49 @@
+package com.kasper.despawnindicator;
+
+/**
+ * When an item about to despawn is drawn. In the last {@code warn} seconds it blinks, slowly at first and
+ * faster towards the end: once a second at the start of the warning, four times a second at its end.
+ * <p>
+ * The phase is a function of the time left alone (the integral of the blink rate), so the blinking speeds up
+ * smoothly without jumps, and items with the same time left blink together.
+ */
+public final class Blink {
+
+    /** Blinks per second when the warning starts and when the item is about to go. */
+    public static final double SLOW = 1.0;
+    public static final double FAST = 4.0;
+    /** The part of each blink the item is shown. */
+    private static final double SHOWN = 0.6;
+    /** How faint a fading item gets at its faintest. */
+    private static final double MIN_ALPHA = 0.25;
+
+    private Blink() {
+    }
+
+    /** Blinks since the warning began; 0 before it. */
+    public static double phase(double secondsLeft, double warnSeconds) {
+        if (warnSeconds <= 0 || secondsLeft >= warnSeconds) {
+            return 0;
+        }
+        double u = warnSeconds - Math.max(0, secondsLeft);
+        return SLOW * u + (FAST - SLOW) * u * u / (2 * warnSeconds);
+    }
+
+    /** Whether the item is drawn now (the blinking style). */
+    public static boolean shown(double secondsLeft, double warnSeconds) {
+        if (secondsLeft >= warnSeconds) {
+            return true;
+        }
+        double p = phase(secondsLeft, warnSeconds);
+        return p - Math.floor(p) < SHOWN;
+    }
+
+    /** How opaque the item is drawn now, 0.25 - 1 (the fading style). */
+    public static double alpha(double secondsLeft, double warnSeconds) {
+        if (secondsLeft >= warnSeconds) {
+            return 1;
+        }
+        double wave = 0.5 + 0.5 * Math.cos(2 * Math.PI * phase(secondsLeft, warnSeconds));
+        return MIN_ALPHA + (1 - MIN_ALPHA) * wave;
+    }
+}

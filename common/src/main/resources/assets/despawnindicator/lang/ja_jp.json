@@ -1,0 +1,6 @@
+{
+  "command.despawnindicator.status.title": "Despawn Indicator %s",
+  "command.despawnindicator.status.players": "Modを入れているプレイヤー：オンライン %2$s 人中 %1$s 人。地面のアイテムが消える時刻を正確に見られます。",
+  "command.despawnindicator.status.lifetime": "ここでは落としたアイテムは %s 後に消えます。",
+  "modmenu.descriptionTranslation.despawnindicator": "地面のアイテムが消える前に点滅し、残り時間を表示します。サーバーにもModがあれば時間は正確です。"
+}
