@@ -1,6 +1,6 @@
 # Pixel-art mod icon on a 32x32 grid: a diamond lying on the ground inside a countdown ring that is running out,
 # amber where time is left, dim where it is gone, with a red tip where it ends.
-# Usage: python3 docs/make-icon.py icon.png common/src/main/resources/assets/despawnindicator/icon.png (needs Pillow).
+# Usage: python3 docs/make-icon.py docs/images/icon.png common/src/main/resources/assets/despawnindicator/icon.png (needs Pillow).
 # Writes the 512px store icon and the 128px icon packed into the mod.
 import math, sys
 from PIL import Image

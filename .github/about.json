@@ -1,0 +1,15 @@
+{
+  "description": "Dropped items blink before they despawn and show how long they have left. Client-only with an estimate, exact with the mod or plugin on the server. Fabric, Forge, NeoForge. / Предметы на земле мигают перед исчезновением и показывают, сколько им осталось.",
+  "topics": [
+    "minecraft",
+    "minecraft-mod",
+    "fabric-mod",
+    "forge-mod",
+    "neoforge",
+    "despawn",
+    "despawn-timer",
+    "items",
+    "death-loot",
+    "hud"
+  ]
+}
