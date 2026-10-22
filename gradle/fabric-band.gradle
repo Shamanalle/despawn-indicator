@@ -6,6 +6,8 @@
 //   gametest - whether the band runs the client gametest (Fabric API has it for 1.21.2 and later)
 //   ownCompat - whether the band has its own Compat (Minecraft before 1.20) instead of the one in shared/mc-1.20
 //   shared   - more directories of shared/ whose sources the band compiles (default none)
+//   commandV1 - whether the band registers its command with the v1 command API of Fabric API (Minecraft before
+//              1.19, the band has its own ModCommands) instead of shared/fabric-command-v2
 // Fabric runs with intermediary names, which stay the same for a method whose signature does not change, so a
 // band's one jar runs on every version of its range.
 
@@ -29,6 +31,9 @@ sourceSets {
             srcDir "${rootDir}/shared/fabric/src/main/java"
             if (!band.ownCompat) {
                 srcDir "${rootDir}/shared/mc-1.20/src/main/java"
+            }
+            if (!band.commandV1) {
+                srcDir "${rootDir}/shared/fabric-command-v2/src/main/java"
             }
             (band.shared ?: []).each { srcDir "${rootDir}/shared/${it}/src/main/java" }
         }
