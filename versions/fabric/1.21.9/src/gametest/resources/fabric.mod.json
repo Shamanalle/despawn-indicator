@@ -9,6 +9,9 @@
       "com.kasper.despawnindicator.gametest.DespawnGameTest"
     ]
   },
+  "mixins": [
+    "despawnindicator-gametest.mixins.json"
+  ],
   "depends": {
     "despawnindicator": "*",
     "fabric-client-gametest-api-v1": "*"
