@@ -26,6 +26,8 @@ No loader, Minecraft version or other mods' names in the name: the stores show t
 
 **Dependencies:** Fabric API (required on Fabric / Quilt), Mod Menu (optional).
 
+**Plugin:** the Paper / Folia / Spigot plugin is a version of the same Modrinth project (loaders Paper, Folia, Spigot, Bukkit, Purpur). CurseForge keeps Bukkit plugins in a separate kind of project, so the plugin is not uploaded there.
+
 **License:** MIT.
 
 **Links:** source `https://github.com/Shamanalle/despawn-indicator`, issues `https://github.com/Shamanalle/despawn-indicator/issues`.
@@ -52,6 +54,8 @@ No loader, Minecraft version or other mods' names in the name: the stores show t
 **Окружение:** клиент и сервер, оба необязательны (Modrinth: *Client: optional, Server: optional*).
 
 **Зависимости:** Fabric API (обязателен на Fabric / Quilt), Mod Menu (необязателен).
+
+**Плагин:** плагин для Paper / Folia / Spigot — версия того же проекта на Modrinth (загрузчики Paper, Folia, Spigot, Bukkit, Purpur). CurseForge держит плагины Bukkit в отдельном виде проектов, поэтому туда плагин не загружается.
 
 **Лицензия:** MIT.
 

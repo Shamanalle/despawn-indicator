@@ -53,6 +53,8 @@ public final class DeathLoot {
         boolean aged;
         boolean frozen;
         int lifespan;
+        /** The tick when {@link #age} was read; the clock runs on from there until the next read. */
+        long readAt;
         int misses;
 
         Stack(ItemEntity entity) {
@@ -61,10 +63,16 @@ public final class DeathLoot {
             this.pos = entity.blockPosition();
             this.age = entity.getAge();
             this.lifespan = Platform.lifespan(entity);
+            this.readAt = ticks;
         }
 
         boolean unlimited() {
             return age == DespawnIndicator.UNLIMITED_AGE || lifespan <= 0;
+        }
+
+        /** Ticks left now. */
+        int left() {
+            return frozen ? lifespan - age : (int) (lifespan - age - (ticks - readAt));
         }
     }
 
@@ -204,6 +212,7 @@ public final class DeathLoot {
             s.age = age;
             s.pos = s.entity.blockPosition();
             s.lifespan = Platform.lifespan(s.entity);
+            s.readAt = ticks;
         }
     }
 
@@ -219,7 +228,7 @@ public final class DeathLoot {
         }
         Stack first = null;
         for (Stack s : loot.stacks) {
-            if (!s.unlimited() && (first == null || s.lifespan - s.age < first.lifespan - first.age)) {
+            if (!s.unlimited() && (first == null || s.left() < first.left())) {
                 first = s;
             }
         }
@@ -230,7 +239,7 @@ public final class DeathLoot {
         }
         BlockPos p = first.pos;
         return new LootMessage(loot.dimension, p.getX(), p.getY(), p.getZ(), items,
-                first.frozen ? ItemClock.FROZEN : 0, first.lifespan - first.age, first.lifespan);
+                first.frozen ? ItemClock.FROZEN : 0, first.left(), first.lifespan);
     }
 
     /** Whether the client, counting {@code sent} down since {@code sentAt}, now shows something else. */

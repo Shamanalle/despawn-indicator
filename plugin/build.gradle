@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+}
+
+// The plugin for Paper, Folia and Spigot servers, Minecraft 1.16.5 and newer. It speaks the same channels and
+// bytes as the mod, so players with the mod get the exact despawn times on these servers too. Built for Java 8
+// (Minecraft 1.16.5 runs on it) against the oldest API it supports; what newer servers changed is looked up at
+// run time. The Folia scheduler lives in its own source set, built against Folia's API for Java 17, and is only
+// loaded on Folia.
+base {
+    archivesName = "despawn-indicator-plugin"
+}
+
+repositories {
+    maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
+    mavenCentral()
+}
+
+apply from: "${rootDir}/gradle/jabel.gradle"
+
+sourceSets {
+    main {
+        java.srcDir "${rootDir}/common/src/main/java"
+        resources.srcDir "${rootDir}/common/src/main/resources"
+    }
+    folia {
+        compileClasspath += main.output
+    }
+}
+
+dependencies {
+    compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
+    foliaCompileOnly 'dev.folia:folia-api:1.20.1-R0.1-SNAPSHOT'
+
+    testImplementation 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
+    testImplementation platform('org.junit:junit-bom:5.10.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// The Folia classes need Folia's API (Java 17); jabel.gradle set every compile to Java 8
+tasks.named('compileFoliaJava') {
+    options.release = 17
+    options.compilerArgs.remove('-Xplugin:jabel')
+}
+
+processResources {
+    inputs.property "version", project.mod_version
+    filesMatching(["plugin.yml", "despawnindicator-build.properties"]) {
+        expand "version": project.mod_version
+    }
+}
+
+jar {
+    archiveFileName = "despawn-indicator-paper-folia-spigot-${project.mod_version}+mc1.16.5-26.x.jar"
+    from sourceSets.folia.output
+    from(rootProject.file("LICENSE")) {
+        rename { "LICENSE_despawn-indicator" }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}

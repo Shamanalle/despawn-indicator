@@ -1,0 +1,11 @@
+name: DespawnIndicator
+version: '${version}'
+main: com.kasper.despawnindicator.bukkit.DespawnIndicatorPlugin
+api-version: '1.16'
+folia-supported: true
+description: Tells players with the Despawn Indicator mod exactly when items on the ground despawn.
+website: https://github.com/Shamanalle/despawn-indicator
+commands:
+  despawnindicator:
+    description: How many players have the mod, and how long dropped items lie here.
+    usage: /despawnindicator
