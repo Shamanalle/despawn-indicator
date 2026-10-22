@@ -1,10 +1,10 @@
 # Store pages / Страницы на площадках
 
-The Modrinth project page is `docs/modrinth.md`: the whole page, in English, with the Russian translation collapsed in a `<details>` block at the end. It is short and tells players what they get; commands and details belong in the README. The *Modrinth page* workflow uploads the page and the summary below to Modrinth on every change pushed to `main` (it needs the `MODRINTH_TOKEN` secret with the *Write projects* scope). CurseForge cannot be updated this way: paste the same text into the description editor by hand. The gallery pictures are listed in `docs/gallery.json` (file, title, description, featured; the list's order is their order) and the same workflow puts them into the Modrinth gallery, replacing the picture with the same title. The list is empty until the first release brings screenshots from the in-game client test. Each picture must stay under 5 MiB.
+The Modrinth project page is `docs/modrinth.md`: the whole page, in English, with the Russian translation collapsed in a `<details>` block at the end. It is short and tells players what they get; commands and details belong in the README. The *Modrinth page* workflow uploads the page and the summary below to Modrinth on every change pushed to `main` (it needs the `MODRINTH_TOKEN` secret with the *Write projects* scope). CurseForge cannot be updated this way: paste the same text into the description editor by hand. The gallery pictures are listed in `docs/gallery.json` (file, title, description, featured; the list's order is their order) and the same workflow puts them into the Modrinth gallery, replacing the picture with the same title. The pictures are screenshots from the in-game client test (Minecraft 26.3), doubled in size with no smoothing so the pixels stay sharp. Each picture must stay under 5 MiB. The page shows the first picture through its raw GitHub link, so the text pasted into CurseForge brings it along.
 
 The page describes the first release (0.1.0) and is uploaded only once the project exists and its id is in `.github/publish.json`.
 
-Страница проекта на Modrinth — это `docs/modrinth.md`: вся страница на английском, а русский перевод свёрнут в блок `<details>` в конце. Она короткая и рассказывает игрокам, что они получат; команды и подробности — в README. Workflow *Modrinth page* выкладывает страницу и краткое описание ниже на Modrinth при каждом изменении в `main` (нужен секрет `MODRINTH_TOKEN` с правом *Write projects*). CurseForge так обновить нельзя: вставьте тот же текст в редактор описания вручную. Картинки галереи перечислены в `docs/gallery.json` (файл, заголовок, описание, featured; порядок списка — порядок картинок), тот же workflow кладёт их в галерею Modrinth, заменяя картинку с тем же заголовком. Пока не вышел первый релиз со скриншотами из клиентского игрового теста, список пуст. Каждая картинка должна быть меньше 5 МиБ.
+Страница проекта на Modrinth — это `docs/modrinth.md`: вся страница на английском, а русский перевод свёрнут в блок `<details>` в конце. Она короткая и рассказывает игрокам, что они получат; команды и подробности — в README. Workflow *Modrinth page* выкладывает страницу и краткое описание ниже на Modrinth при каждом изменении в `main` (нужен секрет `MODRINTH_TOKEN` с правом *Write projects*). CurseForge так обновить нельзя: вставьте тот же текст в редактор описания вручную. Картинки галереи перечислены в `docs/gallery.json` (файл, заголовок, описание, featured; порядок списка — порядок картинок), тот же workflow кладёт их в галерею Modrinth, заменяя картинку с тем же заголовком. Картинки — скриншоты из клиентского игрового теста (Minecraft 26.3), увеличенные вдвое без сглаживания, чтобы пиксели остались чёткими. Каждая картинка должна быть меньше 5 МиБ. Первую картинку страница показывает по прямой ссылке на GitHub, так что текст, вставленный в CurseForge, приносит её с собой.
 
 Страница описывает первый релиз (0.1.0) и выкладывается, только когда проект создан и его id записан в `.github/publish.json`.
 
@@ -37,7 +37,7 @@ No loader, Minecraft version or other mods' names in the name: the stores show t
 ### Upload checklist
 
 1. Create the project on Modrinth (type *Mod*) and on CurseForge (*Minecraft → Mods*) with the name, summary, categories, icon, license and links above.
-2. Modrinth: set the environment as above. CurseForge: paste the text of `docs/modrinth.md` (English only) into the description.
+2. Modrinth: set the environment as above. CurseForge: paste the text of `docs/modrinth.md` (English only) into the description, and upload the pictures from `docs/gallery.json` under *Images* with the same titles and descriptions; mark the first one as the featured image.
 3. Put both project ids into `.github/publish.json` and add the `MODRINTH_TOKEN` and `CURSEFORGE_TOKEN` secrets (scopes in `CONTRIBUTING.md`).
 4. Run *Actions → Modrinth page* once, then publish the release.
 
@@ -66,6 +66,6 @@ No loader, Minecraft version or other mods' names in the name: the stores show t
 ### Чек-лист загрузки
 
 1. Создайте проект на Modrinth (тип *Mod*) и на CurseForge (*Minecraft → Mods*) с названием, кратким описанием, категориями, иконкой, лицензией и ссылками выше.
-2. Modrinth: укажите окружение, как выше. CurseForge: вставьте в описание текст `docs/modrinth.md` (только английскую часть).
+2. Modrinth: укажите окружение, как выше. CurseForge: вставьте в описание текст `docs/modrinth.md` (только английскую часть) и загрузите картинки из `docs/gallery.json` во вкладку *Images* с теми же заголовками и описаниями; первую отметьте как главную.
 3. Впишите id обоих проектов в `.github/publish.json` и добавьте секреты `MODRINTH_TOKEN` и `CURSEFORGE_TOKEN` (права — в `CONTRIBUTING.md`).
 4. Один раз запустите *Actions → Modrinth page*, затем опубликуйте релиз.
