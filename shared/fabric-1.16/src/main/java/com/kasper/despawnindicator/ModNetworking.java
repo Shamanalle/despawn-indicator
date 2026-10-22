@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
- * The two channels on Fabric 1.17.1 - 1.19.4 (channels by name). A packet is the message's bytes
+ * The two channels on Fabric 1.16.5 - 1.19.4 (channels by name). A packet is the message's bytes
  * as they are, the same bytes as on Forge, NeoForge and the Bukkit plugin.
  */
 public final class ModNetworking {
@@ -35,7 +35,7 @@ public final class ModNetworking {
         }
     }
 
-    /** Minecraft 1.17.1 - 1.19.4 does not tell the server the player's language, so replies are in English. */
+    /** Minecraft 1.16.5 - 1.19.4 does not tell the server the player's language, so replies are in English. */
     public static String language(ServerPlayer player) {
         return "";
     }

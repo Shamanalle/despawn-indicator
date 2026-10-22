@@ -3,8 +3,8 @@ plugins {
     id 'java'
 }
 
-// Minecraft 1.19.4 (Java 17). The same code as the 1.19 - 1.19.3 band (shared/fabric-1.17, shared/mc-1.19) but for Compat:
+// Minecraft 1.19.4 (Java 17). The same code as the 1.19 - 1.19.3 band (shared/fabric-1.16, shared/fabric-1.17, shared/mc-1.19) but for Compat:
 // ItemEntity.getOwner returns the entity from 1.19.4 on. Fabric API for 1.19.x has no client gametest, so CI
 // starts this band on a server only.
-ext.band = [target: 'mc1.19.4', props: 'mc1194', java: 17, gametest: false, ownCompat: true, shared: ['fabric-1.17', 'mc-1.19']]
+ext.band = [target: 'mc1.19.4', props: 'mc1194', java: 17, gametest: false, ownCompat: true, shared: ['fabric-1.16', 'fabric-1.17', 'mc-1.19']]
 apply from: "${rootDir}/gradle/fabric-band.gradle"

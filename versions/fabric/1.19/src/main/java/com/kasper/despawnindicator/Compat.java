@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 
 /** The Minecraft calls of the shared code that changed in 1.19.4 and 1.20, as they are on 1.19 - 1.19.3. */
@@ -30,5 +31,25 @@ public final class Compat {
     /** Who dropped the item, by hand or when they died; null if nobody did. */
     public static UUID ownerId(ItemEntity item) {
         return item.getThrower();
+    }
+
+    /** Whether the entity left its level: picked up, despawned, killed, or unloaded with its chunk. */
+    public static boolean removed(Entity entity) {
+        return entity.isRemoved();
+    }
+
+    /** Whether it left its level only because its chunk was unloaded, and so comes back with it. */
+    public static boolean unloaded(Entity entity) {
+        return entity.getRemovalReason() == Entity.RemovalReason.UNLOADED_TO_CHUNK;
+    }
+
+    /** Whether the entities of the chunk (as {@code ChunkPos.asLong}) are loaded. */
+    public static boolean entitiesLoaded(ServerLevel level, long chunk) {
+        return level.areEntitiesLoaded(chunk);
+    }
+
+    /** Where the entity looks, in degrees. */
+    public static float yRot(Entity entity) {
+        return entity.getYRot();
     }
 }

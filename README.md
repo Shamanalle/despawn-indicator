@@ -4,7 +4,7 @@
 
 # Despawn Indicator
 
-[![Minecraft 1.17.1 – 26.3](https://img.shields.io/badge/Minecraft-1.17.1%20%E2%80%93%2026.3-62b47a)](#versions-and-files)
+[![Minecraft 1.16.5 – 26.3](https://img.shields.io/badge/Minecraft-1.16.5%20%E2%80%93%2026.3-62b47a)](#versions-and-files)
 [![Fabric](https://img.shields.io/badge/loader-Fabric-dbd0b4)](https://fabricmc.net/)
 [![Quilt](https://img.shields.io/badge/loader-Quilt-8e4dd0)](https://quiltmc.org/)
 [![NeoForge](https://img.shields.io/badge/loader-NeoForge-e68c37)](https://neoforged.net/)
@@ -94,11 +94,11 @@ Both files are plain text, are created on first start with comments, and are rea
 
 | File | Loaders | Minecraft | Java |
 |---|---|---|---|
-| `despawn-indicator-fabric-<version>+mc1.17-26.x.jar` | Fabric, Quilt (needs Fabric API) | 1.17.1 – 1.21.11, 26.1 – 26.3 | 16 (1.18.2 and up: 17, 1.20.5 and up: 21, 26.x: 25) |
+| `despawn-indicator-fabric-<version>+mc1.16-26.x.jar` | Fabric, Quilt (needs Fabric API) | 1.16.5 – 1.21.11, 26.1 – 26.3 | 8 (1.17.1: 16, 1.18.2 and up: 17, 1.20.5 and up: 21, 26.x: 25) |
 | `despawn-indicator-forge-neoforge-<version>+mc1.20.1-1.21.1.jar` | Forge 1.20.1, NeoForge 1.20.1 and 1.21 – 1.21.1 | 1.20.1, 1.21 – 1.21.1 | 17 (1.21: 21) |
 | `despawn-indicator-paper-folia-spigot-<version>+mc1.16.5-26.x.jar` (server plugin) | Paper, Folia, Spigot, Purpur | 1.16.5 – 1.21.11, 26.1 – 26.3 | what the server needs |
 
-Each file holds a build for every Minecraft version in its range and picks the right one at startup. On Forge the second file runs on 1.20.1 only; Modrinth and CurseForge also list Forge 1.21 for it, because they take one list of versions per file. More versions of the mod (Fabric 1.16.5, more Forge and NeoForge versions) will follow. The plugin is on Modrinth and GitHub only: CurseForge keeps server plugins in a separate kind of project.
+Each file holds a build for every Minecraft version in its range and picks the right one at startup. On Forge the second file runs on 1.20.1 only; Modrinth and CurseForge also list Forge 1.21 for it, because they take one list of versions per file. More Forge and NeoForge versions will follow. The plugin is on Modrinth and GitHub only: CurseForge keeps server plugins in a separate kind of project.
 
 ## Compatibility
 
@@ -110,7 +110,7 @@ Each file holds a build for every Minecraft version in its range and picks the r
 
 ## Commands
 
-`/despawnindicator`: the mod's or plugin's version, how many online players have the mod and how long dropped items stay on this server. Answers in the player's language (on Forge 1.20.1 and Fabric 1.17.1 – 1.20.1 in English: these versions do not tell the server the player's language). Anyone can run it, also from the server console.
+`/despawnindicator`: the mod's or plugin's version, how many online players have the mod and how long dropped items stay on this server. Answers in the player's language (on Forge 1.20.1 and Fabric 1.16.5 – 1.20.1 in English: these versions do not tell the server the player's language). Anyone can run it, also from the server console.
 
 ## Questions and problems
 

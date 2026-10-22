@@ -36,4 +36,24 @@ public final class Compat {
         Entity owner = item.getOwner();
         return owner == null ? null : owner.getUUID();
     }
+
+    /** Whether the entity left its level: picked up, despawned, killed, or unloaded with its chunk. */
+    public static boolean removed(Entity entity) {
+        return entity.isRemoved();
+    }
+
+    /** Whether it left its level only because its chunk was unloaded, and so comes back with it. */
+    public static boolean unloaded(Entity entity) {
+        return entity.getRemovalReason() == Entity.RemovalReason.UNLOADED_TO_CHUNK;
+    }
+
+    /** Whether the entities of the chunk (as {@code ChunkPos.asLong}) are loaded. */
+    public static boolean entitiesLoaded(ServerLevel level, long chunk) {
+        return level.areEntitiesLoaded(chunk);
+    }
+
+    /** Where the entity looks, in degrees. */
+    public static float yRot(Entity entity) {
+        return entity.getYRot();
+    }
 }

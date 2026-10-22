@@ -24,6 +24,7 @@ sourceSets {
             srcDir "${rootDir}/shared/mc/src/main/java"
             srcDir "${rootDir}/shared/mc-1.20/src/main/java"
             srcDir "${rootDir}/shared/fabric/src/main/java"
+            srcDir "${rootDir}/shared/fabric-slf4j/src/main/java"
             srcDir "${rootDir}/shared/fabric-command-v2/src/main/java"
         }
     }

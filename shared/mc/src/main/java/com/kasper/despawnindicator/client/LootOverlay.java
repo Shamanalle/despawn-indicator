@@ -1,6 +1,7 @@
 package com.kasper.despawnindicator.client;
 
 import com.kasper.despawnindicator.ClientSettings;
+import com.kasper.despawnindicator.Compat;
 import com.kasper.despawnindicator.Dimensions;
 import com.kasper.despawnindicator.LootHud;
 import com.kasper.despawnindicator.LootTracker;
@@ -54,7 +55,7 @@ public final class LootOverlay {
             double dx = r.x + 0.5 - player.getX();
             double dy = r.y - player.getY();
             double dz = r.z + 0.5 - player.getZ();
-            second.append(LootHud.arrow(dx, dz, player.getYRot())).append(' ')
+            second.append(LootHud.arrow(dx, dz, Compat.yRot(player))).append(' ')
                     .append(I18n.get("gui.despawnindicator.loot.distance", LootHud.distance(dx, dy, dz)))
                     .append("  ");
         }

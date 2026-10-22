@@ -121,7 +121,7 @@ public final class ServerClocks {
             }
             List<ItemClock> clocks = new ArrayList<>();
             for (ItemEntity item : e.getValue()) {
-                if (item.isRemoved()) {
+                if (Compat.removed(item)) {
                     continue;
                 }
                 boolean mine = mine(item, player);

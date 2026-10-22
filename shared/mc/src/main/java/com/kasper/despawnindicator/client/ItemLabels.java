@@ -144,7 +144,7 @@ final class ItemLabels {
         boolean warn = settings.style == ClientSettings.Style.LABEL;
         double warnTicks = settings.warnSeconds * (double) DespawnIndicator.TICKS_PER_SECOND;
         for (Entity e : level.entitiesForRendering()) {
-            if (!(e instanceof ItemEntity) || e.isRemoved()) {
+            if (!(e instanceof ItemEntity) || Compat.removed(e)) {
                 continue;
             }
             ItemEntity item = (ItemEntity) e;

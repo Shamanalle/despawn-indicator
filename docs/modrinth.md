@@ -6,7 +6,7 @@ Items on the ground vanish after five minutes, and Minecraft never says how long
 - **After death:** a timer in the corner counts down until your dropped items vanish, with an arrow, the distance and the coordinates. It turns yellow in the last minute and blinks red in the last 15 seconds, and goes away once you pick everything up.
 - **`/despawnindicator`** tells a server owner how many online players have the mod.
 
-Three files cover everything: one for Fabric and Quilt (Minecraft 1.17.1 – 1.21.11 and 26.1 – 26.3, needs Fabric API), one for Forge 1.20.1 and NeoForge 1.20.1 – 1.21.1, and a server plugin for Paper, Folia and Spigot 1.16.5 – 26.3.
+Three files cover everything: one for Fabric and Quilt (Minecraft 1.16.5 – 1.21.11 and 26.1 – 26.3, needs Fabric API), one for Forge 1.20.1 and NeoForge 1.20.1 – 1.21.1, and a server plugin for Paper, Folia and Spigot 1.16.5 – 26.3.
 
 [Source and details](https://github.com/Shamanalle/despawn-indicator) · [Bugs and ideas](https://github.com/Shamanalle/despawn-indicator/issues)
 
@@ -21,7 +21,7 @@ Three files cover everything: one for Fabric and Quilt (Minecraft 1.17.1 – 1.2
 - **После смерти:** таймер в углу экрана считает, сколько осталось вашим выпавшим вещам, и показывает стрелку, расстояние и координаты. В последнюю минуту он жёлтый, в последние 15 секунд мигает красным и пропадает, когда вы всё подобрали.
 - **`/despawnindicator`** показывает владельцу сервера, сколько игроков онлайн с модом.
 
-Всего три файла: для Fabric и Quilt (Minecraft 1.17.1 – 1.21.11 и 26.1 – 26.3, нужен Fabric API), для Forge 1.20.1 и NeoForge 1.20.1 – 1.21.1 и плагин для серверов Paper, Folia и Spigot 1.16.5 – 26.3.
+Всего три файла: для Fabric и Quilt (Minecraft 1.16.5 – 1.21.11 и 26.1 – 26.3, нужен Fabric API), для Forge 1.20.1 и NeoForge 1.20.1 – 1.21.1 и плагин для серверов Paper, Folia и Spigot 1.16.5 – 26.3.
 
 [Исходники и подробности](https://github.com/Shamanalle/despawn-indicator) · [Ошибки и идеи](https://github.com/Shamanalle/despawn-indicator/issues)
 
