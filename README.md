@@ -9,6 +9,7 @@
 [![Quilt](https://img.shields.io/badge/loader-Quilt-8e4dd0)](https://quiltmc.org/)
 [![NeoForge](https://img.shields.io/badge/loader-NeoForge-e68c37)](https://neoforged.net/)
 [![Forge](https://img.shields.io/badge/loader-Forge-2b2b33)](https://files.minecraftforge.net/)
+[![Paper / Folia / Spigot plugin](https://img.shields.io/badge/plugin-Paper%20%2F%20Folia%20%2F%20Spigot%201.16.5%2B-3b7bbf)](#versions-and-files)
 [![Release](https://img.shields.io/github/v/release/Shamanalle/despawn-indicator?color=4c8bf5&include_prereleases)](https://github.com/Shamanalle/despawn-indicator/releases)
 [![In-game tests](https://github.com/Shamanalle/despawn-indicator/actions/workflows/ingame.yml/badge.svg)](https://github.com/Shamanalle/despawn-indicator/actions/workflows/ingame.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
@@ -19,7 +20,7 @@
 
 Items on the ground disappear after five minutes, and Minecraft never tells you how long one has left. Despawn Indicator does: dropped items start to blink before they despawn, faster and faster toward the end, and show the time left (`0:42`) when you look at them. After you die, a timer on the screen counts down to your lost items and points the way back.
 
-> **Early version.** Blinking, the time label, the death loot timer, exact times with the server mod and `/despawnindicator` are in. Coming later: the Paper / Folia / Spigot plugin, a fade that works with shaders and more Minecraft versions. See the [plan](docs/PLAN.md).
+> **Early version.** Blinking, the time label, the death loot timer, exact times with the server mod or the Paper / Folia / Spigot plugin and `/despawnindicator` are in. Coming later: a fade that works with shaders and more Minecraft versions for the mod. See the [plan](docs/PLAN.md).
 
 ## Contents
 
@@ -44,7 +45,7 @@ That is enough for singleplayer and for any server. On a server without the mod 
 
 **Server owner**
 - Fabric, Forge, NeoForge: put the same `.jar` into the server's `mods/`. Players with the mod then see exact times; players without it are not affected and can still join.
-- Paper, Folia, Spigot: a plugin is planned.
+- Paper, Folia, Spigot (and forks such as Purpur), 1.16.5 and newer: put the plugin `despawn-indicator-paper-folia-spigot-<version>+mc1.16.5-26.x.jar` into the server's `plugins/` and restart. It does the same as the server mod. Players without the mod are not affected.
 
 ## What it does
 
@@ -56,7 +57,7 @@ That is enough for singleplayer and for any server. On a server without the mod 
 
 ## What works where
 
-| | Client only | Client + server mod | Singleplayer |
+| | Client only | Client + server mod or plugin | Singleplayer |
 |---|---|---|---|
 | Blinking and time label | ✅ estimated `≈` | ✅ exact | ✅ exact |
 | Items dropped before you came near | ⚠️ look younger than they are | ✅ | ✅ |
@@ -82,7 +83,7 @@ Both files are plain text, are created on first start with comments, and are rea
 | `labels` | `look_sneak` | When items show their time: `look_sneak` (the item you look at, and all around while sneaking), `look`, `sneak` or `never`. |
 | `sound` | `false` | A chime when the death loot timer reaches one minute and a bell at 15 seconds. |
 
-**Server owner:** `config/despawnindicator-server.properties`
+**Server owner:** `config/despawnindicator-server.properties` (with the plugin: `plugins/DespawnIndicator/despawnindicator-server.properties`)
 
 | Setting | Default | What it does |
 |---|---|---|
@@ -94,27 +95,29 @@ Both files are plain text, are created on first start with comments, and are rea
 |---|---|---|---|
 | `despawn-indicator-fabric-<version>+mc1.21-26.x.jar` | Fabric, Quilt (needs Fabric API) | 1.21 – 1.21.11, 26.1 – 26.3 | 21 (26.x: 25) |
 | `despawn-indicator-forge-neoforge-<version>+mc1.20.1-1.21.1.jar` | Forge 1.20.1, NeoForge 1.20.1 and 1.21 – 1.21.1 | 1.20.1, 1.21 – 1.21.1 | 17 (1.21: 21) |
+| `despawn-indicator-paper-folia-spigot-<version>+mc1.16.5-26.x.jar` (server plugin) | Paper, Folia, Spigot, Purpur | 1.16.5 – 1.21.11, 26.1 – 26.3 | what the server needs |
 
-Each file holds a build for every Minecraft version in its range and picks the right one at startup. On Forge the second file runs on 1.20.1 only; Modrinth and CurseForge also list Forge 1.21 for it, because they take one list of versions per file. More versions (1.16.5 and up) will follow.
+Each file holds a build for every Minecraft version in its range and picks the right one at startup. On Forge the second file runs on 1.20.1 only; Modrinth and CurseForge also list Forge 1.21 for it, because they take one list of versions per file. More versions of the mod (1.16.5 and up) will follow. The plugin is on Modrinth and GitHub only: CurseForge keeps server plugins in a separate kind of project.
 
 ## Compatibility
 
 - **Shaders (Iris, Oculus), Sodium, Embeddium:** blinking skips frames instead of changing transparency, so shader packs draw it correctly.
 - **Grave mods:** when a grave mod stores your items in a grave block, there are no items on the ground and nothing to count down: the death loot timer does not appear.
 - **Item clearing mods** (ClearLag and the like) remove items on their own schedule, which the countdown cannot know.
+- **The plugin** is tested on Paper 1.16.5, 1.17.1, 1.20.4, 1.21.11 and 26.1.2 and on Folia 1.21.11; Spigot uses the same API but is not tested on every release. It follows Paper's per-item despawn rates (`alt-item-despawn-rate`) and Spigot's `item-despawn-rate`. On Folia it sees each item from that item's region thread. After `/reload` players who were online get item times but no death loot timer until they rejoin.
 - **Mods that draw dropped items their own way** (replacing Minecraft's item renderer) may cancel the blinking; the time label still works.
 
 ## Commands
 
-`/despawnindicator`: the mod's version, how many online players have it and how long dropped items stay on this server. Answers in the player's language (on Forge 1.20.1 in English). Anyone can run it, also from the server console.
+`/despawnindicator`: the mod's or plugin's version, how many online players have the mod and how long dropped items stay on this server. Answers in the player's language (on Forge 1.20.1 in English). Anyone can run it, also from the server console.
 
 ## Questions and problems
 
-**The time has `≈`.** The server does not have the mod, so the time is counted from when you first saw the item.
+**The time has `≈`.** The server has neither the mod nor the plugin, so the time is counted from when you first saw the item.
 
 **No death loot timer after I died.** Nothing was dropped: keepInventory is on, a grave mod took the items, or they fell into the void or lava. The timer is also off with `death_hud=false`.
 
-**The death loot timer vanished while the items are still there.** With the mod on the server an item that merged into another stack lying nearby, or went through a portal, no longer counts as your loot.
+**The death loot timer vanished while the items are still there.** With the mod or plugin on the server an item that merged into another stack lying nearby, or went through a portal, no longer counts as your loot.
 
 **An item vanished before its time ran out.** Something other than despawning removed it: a player, a hopper, lava, a cactus, or a clearing mod or plugin.
 

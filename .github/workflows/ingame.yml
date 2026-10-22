@@ -1,9 +1,10 @@
 name: In-game tests
 
 # Starts real servers with the mod (.github/scripts/server-smoke.sh): each must come up, answer
-# /despawnindicator with real text and log no exception from the mod. Then a real Fabric client drops
-# items in a world and checks that the server half sent their despawn times, with screenshots. The
-# release (release.yml) runs this first and stops when it fails.
+# /despawnindicator with real text and log no exception from the mod. The server plugin runs on Paper
+# and Folia with a scripted player that has the mod (.github/scripts/plugin-smoke.py). Then a real Fabric
+# client drops items in a world and checks that the server half sent their despawn times, with
+# screenshots. The release (release.yml) runs this first and stops when it fails.
 #
 # A download that fails on the way (a timeout, a reset connection, HTTP 429 / 5xx; see
 # .github/scripts/net-failure.sh) is tried once more and leaves a warning on the run: the Gradle build
@@ -99,6 +100,51 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: server-log-${{ matrix.loader }}-${{ matrix.mc }}${{ matrix.label && format('-{0}', matrix.label) || '' }}
+          path: ${{ runner.temp }}/server-*/*.log
+          if-no-files-found: ignore
+
+  plugin:
+    name: Plugin on ${{ matrix.project }} ${{ matrix.mc }} (a player with the mod)
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { project: paper, mc: '1.16.5', java: '17' }
+          - { project: paper, mc: '1.17.1', java: '17' }
+          - { project: paper, mc: '1.20.4', java: '21' }
+          - { project: paper, mc: '1.21.11', java: '21' }
+          - { project: folia, mc: '1.21.11', java: '21' }
+          - { project: paper, mc: '26.1.2', java: '25' }
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download jars
+        uses: actions/download-artifact@v4
+        with:
+          name: ingame-jars
+          path: jars
+      - name: Join, throw a stack, die and run /despawnindicator
+        run: |
+          npm install --prefix "${RUNNER_TEMP}/bot" --no-audit --no-fund mineflayer@4.39.0
+          export NODE_PATH="${RUNNER_TEMP}/bot/node_modules"
+          python3 .github/scripts/plugin-smoke.py ${{ matrix.project }} ${{ matrix.mc }} jars/despawn-indicator-paper-folia-spigot-*.jar
+      - name: Upload the server log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-log-${{ matrix.project }}-${{ matrix.mc }}
           path: ${{ runner.temp }}/server-*/*.log
           if-no-files-found: ignore
 

@@ -34,4 +34,6 @@ bands.each { loader, list ->
 }
 
 include "universal"
+// The server plugin for Paper, Folia and Spigot
+include "plugin"
 include "packaging"

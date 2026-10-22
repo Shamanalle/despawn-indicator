@@ -307,8 +307,8 @@ tasks.register('mergeForge', JavaExec) {
 
 tasks.register('buildAll') {
     group = 'build'
-    description = 'Builds and collects the release jars for every Minecraft version and loader into build/libs'
-    dependsOn 'mergeFabric', 'mergeForge'
+    description = 'Builds and collects the release jars for every Minecraft version and loader, and the server plugin, into build/libs'
+    dependsOn 'mergeFabric', 'mergeForge', ':plugin:jar'
 
     doLast {
         def outDir = layout.buildDirectory.dir("libs").get().asFile
@@ -316,6 +316,7 @@ tasks.register('buildAll') {
         copy {
             from layout.buildDirectory.file("universal/${fabricUniversalName}")
             from layout.buildDirectory.file("universal/${forgeUniversalName}")
+            from project(':plugin').tasks.named('jar').flatMap { it.archiveFile }
             into outDir
         }
     }
