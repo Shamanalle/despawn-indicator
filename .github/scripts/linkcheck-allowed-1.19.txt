@@ -1,0 +1,6 @@
+# Differences between Minecraft 1.19.2 (the reference) and the other releases of 1.19 - 1.19.3 that were reviewed
+# and are safe. One key per line as LinkCheck prints it after "DIFF".
+
+# The command build context became an interface in 1.19.3. The mod only receives it as a parameter of the
+# command registration callback and never calls it, so the kind of type does not matter.
+type net/minecraft/class_7157

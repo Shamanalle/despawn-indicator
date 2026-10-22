@@ -2,6 +2,7 @@ package com.kasper.despawnindicator.client;
 
 import com.kasper.despawnindicator.ClientClocks;
 import com.kasper.despawnindicator.ClientSettings;
+import com.kasper.despawnindicator.Compat;
 import com.kasper.despawnindicator.DespawnIndicator;
 import com.kasper.despawnindicator.TimeText;
 import net.minecraft.ChatFormatting;
@@ -102,7 +103,7 @@ final class ItemLabels {
         if (old == null && item.getCustomName() != null) {
             return;
         }
-        Component name = Component.literal(text).withStyle(colour(r.ticksLeft, warnSeconds));
+        Component name = Compat.literal(text).withStyle(colour(r.ticksLeft, warnSeconds));
         boolean wasVisible = old != null ? old.wasVisible : item.isCustomNameVisible();
         item.setCustomName(name);
         item.setCustomNameVisible(true);

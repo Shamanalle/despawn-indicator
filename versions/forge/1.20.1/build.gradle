@@ -29,6 +29,7 @@ sourceSets {
     main {
         java {
             srcDir "${rootDir}/shared/mc/src/main/java"
+            srcDir "${rootDir}/shared/mc-1.20/src/main/java"
         }
     }
 }
