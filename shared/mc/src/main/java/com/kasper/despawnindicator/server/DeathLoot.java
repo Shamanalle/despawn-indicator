@@ -1,5 +1,6 @@
 package com.kasper.despawnindicator.server;
 
+import com.kasper.despawnindicator.Compat;
 import com.kasper.despawnindicator.DespawnIndicator;
 import com.kasper.despawnindicator.Dimensions;
 import com.kasper.despawnindicator.HelloMessage;
@@ -164,14 +165,14 @@ public final class DeathLoot {
     }
 
     private static void died(ServerPlayer player) {
-        ServerLevel level = (ServerLevel) player.level();
+        ServerLevel level = Compat.level(player);
         List<Stack> stacks = new ArrayList<>();
         for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(DROP_RADIUS))) {
             if (item.isRemoved() || item.tickCount > FRESH_TICKS) {
                 continue;
             }
-            Entity owner = item.getOwner();
-            if (owner == null || owner.getUUID().equals(player.getUUID())) {
+            UUID owner = Compat.ownerId(item);
+            if (owner == null || owner.equals(player.getUUID())) {
                 stacks.add(new Stack(item));
             }
         }

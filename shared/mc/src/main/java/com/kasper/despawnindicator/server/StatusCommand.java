@@ -1,6 +1,7 @@
 package com.kasper.despawnindicator.server;
 
 import com.kasper.despawnindicator.BuildInfo;
+import com.kasper.despawnindicator.Compat;
 import com.kasper.despawnindicator.DespawnIndicator;
 import com.kasper.despawnindicator.ServerText;
 import com.kasper.despawnindicator.TimeText;
@@ -8,7 +9,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 /** {@code /despawnindicator}: the mod's status on this server, in the language of whoever asks. */
@@ -32,6 +32,6 @@ public final class StatusCommand {
     }
 
     private static void reply(CommandSourceStack source, String text) {
-        source.sendSuccess(() -> Component.literal(text), false);
+        Compat.reply(source, Compat.literal(text));
     }
 }

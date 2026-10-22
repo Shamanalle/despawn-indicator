@@ -7,8 +7,6 @@ import com.kasper.despawnindicator.LootTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.phys.AABB;
 
@@ -53,7 +51,7 @@ final class LootClient {
                 guess(loot, player, level);
             }
         }
-        sound(mc, loot.read(), settings);
+        sound(loot.read(), settings);
     }
 
     private static void guess(LootTracker loot, LocalPlayer player, ClientLevel level) {
@@ -104,16 +102,14 @@ final class LootClient {
     }
 
     /** A note when the timer turns yellow and another when it turns red. */
-    private static void sound(Minecraft mc, LootTracker.Reading r, ClientSettings settings) {
+    private static void sound(LootTracker.Reading r, ClientSettings settings) {
         if (r == null || r.unlimited) {
             heard = null;
             return;
         }
         LootHud.Level now = LootHud.level(r.ticksLeft);
         if (heard != null && now.ordinal() > heard.ordinal() && settings.sound && !r.frozen) {
-            // playDelayed: play() returns a result since 1.21.6, so its signature differs within 1.21.x
-            mc.getSoundManager().playDelayed(SimpleSoundInstance.forUI(
-                    now == LootHud.Level.URGENT ? SoundEvents.NOTE_BLOCK_BELL : SoundEvents.NOTE_BLOCK_PLING, 1.0F), 0);
+            ClientCompat.playNote(now == LootHud.Level.URGENT);
         }
         heard = now;
     }

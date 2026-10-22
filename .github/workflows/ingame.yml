@@ -60,17 +60,21 @@ jobs:
       matrix:
         include:
           # One jar for every Fabric version, so each job also checks that it picks the right band
-          - { loader: fabric, mc: '1.20', jar: 'despawn-indicator-fabric-*+mc1.20-26.x.jar', java: '17' }
-          - { loader: fabric, mc: '1.20.1', jar: 'despawn-indicator-fabric-*+mc1.20-26.x.jar', java: '17' }
-          - { loader: fabric, mc: '1.20.4', jar: 'despawn-indicator-fabric-*+mc1.20-26.x.jar', java: '17' }
-          - { loader: fabric, mc: '1.20.6', jar: 'despawn-indicator-fabric-*+mc1.20-26.x.jar', java: '21' }
-          - { loader: fabric, mc: '1.21', jar: 'despawn-indicator-fabric-*+mc1.20-26.x.jar', java: '21' }
-          - { loader: fabric, mc: '1.21.1', jar: 'despawn-indicator-fabric-*+mc1.20-26.x.jar', java: '21' }
-          - { loader: fabric, mc: '1.21.5', jar: 'despawn-indicator-fabric-*+mc1.20-26.x.jar', java: '21' }
-          - { loader: fabric, mc: '1.21.8', jar: 'despawn-indicator-fabric-*+mc1.20-26.x.jar', java: '21' }
-          - { loader: fabric, mc: '1.21.11', jar: 'despawn-indicator-fabric-*+mc1.20-26.x.jar', java: '21' }
-          - { loader: fabric, mc: '26.1', jar: 'despawn-indicator-fabric-*+mc1.20-26.x.jar', java: '25' }
-          - { loader: fabric, mc: '26.3', jar: 'despawn-indicator-fabric-*+mc1.20-26.x.jar', java: '25' }
+          - { loader: fabric, mc: '1.19', jar: 'despawn-indicator-fabric-*+mc1.19-26.x.jar', java: '17' }
+          - { loader: fabric, mc: '1.19.2', jar: 'despawn-indicator-fabric-*+mc1.19-26.x.jar', java: '17' }
+          - { loader: fabric, mc: '1.19.3', jar: 'despawn-indicator-fabric-*+mc1.19-26.x.jar', java: '17' }
+          - { loader: fabric, mc: '1.19.4', jar: 'despawn-indicator-fabric-*+mc1.19-26.x.jar', java: '17' }
+          - { loader: fabric, mc: '1.20', jar: 'despawn-indicator-fabric-*+mc1.19-26.x.jar', java: '17' }
+          - { loader: fabric, mc: '1.20.1', jar: 'despawn-indicator-fabric-*+mc1.19-26.x.jar', java: '17' }
+          - { loader: fabric, mc: '1.20.4', jar: 'despawn-indicator-fabric-*+mc1.19-26.x.jar', java: '17' }
+          - { loader: fabric, mc: '1.20.6', jar: 'despawn-indicator-fabric-*+mc1.19-26.x.jar', java: '21' }
+          - { loader: fabric, mc: '1.21', jar: 'despawn-indicator-fabric-*+mc1.19-26.x.jar', java: '21' }
+          - { loader: fabric, mc: '1.21.1', jar: 'despawn-indicator-fabric-*+mc1.19-26.x.jar', java: '21' }
+          - { loader: fabric, mc: '1.21.5', jar: 'despawn-indicator-fabric-*+mc1.19-26.x.jar', java: '21' }
+          - { loader: fabric, mc: '1.21.8', jar: 'despawn-indicator-fabric-*+mc1.19-26.x.jar', java: '21' }
+          - { loader: fabric, mc: '1.21.11', jar: 'despawn-indicator-fabric-*+mc1.19-26.x.jar', java: '21' }
+          - { loader: fabric, mc: '26.1', jar: 'despawn-indicator-fabric-*+mc1.19-26.x.jar', java: '25' }
+          - { loader: fabric, mc: '26.3', jar: 'despawn-indicator-fabric-*+mc1.19-26.x.jar', java: '25' }
           - { loader: forge, mc: '1.20', jar: 'despawn-indicator-forge-neoforge-*+mc1.20.1-1.21.1.jar', java: '17', version: 'forge120_version_oldest', label: 'oldest' }
           - { loader: forge, mc: '1.20.1', jar: 'despawn-indicator-forge-neoforge-*+mc1.20.1-1.21.1.jar', java: '17', version: 'forge120_version' }
           # NeoForge for 1.20.1 is a fork of Forge 1.20.1 and loads the jar as Forge

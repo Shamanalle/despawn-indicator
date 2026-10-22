@@ -2,6 +2,7 @@ package com.kasper.despawnindicator.server;
 
 import com.kasper.despawnindicator.ClockMessage;
 import com.kasper.despawnindicator.ClockSender;
+import com.kasper.despawnindicator.Compat;
 import com.kasper.despawnindicator.ConfigFile;
 import com.kasper.despawnindicator.HelloMessage;
 import com.kasper.despawnindicator.ItemClock;
@@ -163,7 +164,6 @@ public final class ServerClocks {
 
     /** Whether {@code player} dropped the item, by hand or when they died. */
     static boolean mine(ItemEntity item, ServerPlayer player) {
-        Entity owner = item.getOwner();
-        return owner != null && owner.getUUID().equals(player.getUUID());
+        return player.getUUID().equals(Compat.ownerId(item));
     }
 }
