@@ -30,10 +30,15 @@ check network "java.io.IOException: Server returned HTTP response code: 503 for 
 check network "curl: (22) The requested URL returned error: 429"
 check network "curl: (6) Could not resolve host: api.modrinth.com"
 check network "java.net.SocketException: Connection reset"
+check network "Caused by: net.fabricmc.loom.util.download.DownloadException: HTTP request returned unsuccessful status (503)"
+check network "	Suppressed: net.fabricmc.loom.util.download.DownloadException: Failed to download (https://resources.download.minecraft.net/ab/abc)
+	Caused by: java.net.http.HttpConnectTimeoutException: HTTP connect timed out"
 # Not network failures: trying again cannot help, or the code is wrong
 check other "> Could not find java-objc-bridge-1.1.jar (ca.weblite:java-objc-bridge:1.1)."
 check other "curl: (22) The requested URL returned error: 404"
 check other "> Could not GET 'https://maven.neoforged.net/x.pom'. Received status code 404 from server: Not Found"
+check other "net.fabricmc.loom.util.download.DownloadException: Failed to download"
+check other "Caused by: net.fabricmc.loom.util.download.DownloadException: HTTP request returned unsuccessful status (404)"
 check other "error: cannot find symbol"
 check other "ClocksTest > exactCountsDown() FAILED"
 check other "java.lang.NoSuchMethodError: 'void net.minecraft.server.MinecraftServer.tick()'"

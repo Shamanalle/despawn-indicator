@@ -184,10 +184,11 @@ jobs:
         run: |
           chmod +x gradlew
           xvfb-run -a -s "-screen 0 1280x960x24 +extension GLX +render" sh -c 'glxinfo -B | head -12 || true'
-          # Tried again only when it failed on a download before the game started
+          # Tried again only when it failed on a download before the game started. --stacktrace prints the
+          # cause under Loom's bare "Failed to download", so net-retry.sh can tell a timeout from a 404
           bash .github/scripts/net-retry.sh --started '^> Task :${{ matrix.module }}:runClientGameTest' -- \
             xvfb-run -a -s "-screen 0 1280x960x24 +extension GLX +render" ./gradlew :${{ matrix.module }}:runClientGameTest \
-            --no-daemon --console=plain -Porg.gradle.java.installations.fromEnv=JAVA_HOME_21_X64,JAVA_HOME_25_X64
+            --no-daemon --console=plain --stacktrace -Porg.gradle.java.installations.fromEnv=JAVA_HOME_21_X64,JAVA_HOME_25_X64
       - name: Upload screenshots and logs
         if: always()
         uses: actions/upload-artifact@v4
