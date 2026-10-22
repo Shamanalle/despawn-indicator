@@ -3,13 +3,16 @@ package com.kasper.despawnindicator.gametest;
 import com.kasper.despawnindicator.ClientClocks;
 import com.kasper.despawnindicator.DespawnIndicator;
 import com.kasper.despawnindicator.client.ClientTicker;
+import com.kasper.despawnindicator.client.ItemLook;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 import java.util.ArrayList;
@@ -19,8 +22,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Drops items in front of the player in a real singleplayer world and checks the whole way from the server half
  * to the client: an old item gets its exact time left, an item that never despawns gets no timer, a fresh one
- * the full five minutes. Then runs {@code /despawnindicator} as the player and checks the reply is real text.
- * Screenshots are uploaded by CI.
+ * the full five minutes. The old diamond blinks; looking at an item and sneaking put time labels over them.
+ * Then runs {@code /despawnindicator} as the player and checks the reply is real text. Screenshots are uploaded
+ * by CI.
  */
 public class DespawnGameTest implements FabricClientGameTest {
 
@@ -42,6 +46,29 @@ public class DespawnGameTest implements FabricClientGameTest {
             context.waitTicks(20);
             context.runOnClient(DespawnGameTest::checkClocks);
             context.takeScreenshot("world-items");
+
+            checkBlinking(context);
+
+            world.getServer().runCommand("execute as @a at @s anchored eyes run tp @s ~ ~ ~ facing entity "
+                    + "@e[type=item,limit=1,sort=nearest,nbt={Item:{id:\"minecraft:gold_ingot\"}}] feet");
+            context.waitTicks(10);
+            context.takeScreenshot("label-look");
+            context.runOnClient(client -> {
+                expectLabel(client, Items.GOLD_INGOT, true);
+                expectLabel(client, Items.DIAMOND, false);
+            });
+
+            context.getInput().holdKey(options -> options.keyShift);
+            context.waitTicks(10);
+            context.takeScreenshot("label-sneak");
+            context.runOnClient(client -> {
+                expectLabel(client, Items.GOLD_INGOT, true);
+                expectLabel(client, Items.DIAMOND, true);
+                expectLabel(client, Items.EMERALD, false);
+            });
+            context.getInput().releaseKey(options -> options.keyShift);
+            context.waitTicks(5);
+            context.runOnClient(client -> expectLabel(client, Items.DIAMOND, false));
 
             RECEIVED.clear();
             context.runOnClient(client -> client.player.connection.sendCommand(DespawnIndicator.MOD_ID));
@@ -78,6 +105,49 @@ public class DespawnGameTest implements FabricClientGameTest {
         if (!problems.isEmpty()) {
             throw new AssertionError(String.join("; ", problems));
         }
+    }
+
+    /** The diamond has seconds left: over a second and a half it must be both hidden and shown. */
+    private static void checkBlinking(ClientGameTestContext context) {
+        int[] counts = new int[2];
+        for (int i = 0; i < 30; i++) {
+            context.runOnClient(client -> counts[ItemLook.hidden(find(client, Items.DIAMOND)) ? 0 : 1]++);
+            context.waitTick();
+        }
+        System.out.println("[gametest] diamond hidden " + counts[0] + ", shown " + counts[1] + " of 30 ticks");
+        if (counts[0] == 0 || counts[1] == 0) {
+            throw new AssertionError("The diamond does not blink: hidden " + counts[0] + ", shown " + counts[1] + " of 30 ticks");
+        }
+        context.runOnClient(client -> {
+            if (ItemLook.hidden(find(client, Items.GOLD_INGOT))) {
+                throw new AssertionError("A fresh item blinks");
+            }
+        });
+    }
+
+    private static void expectLabel(Minecraft client, Item which, boolean labeled) {
+        ItemEntity item = find(client, which);
+        Component name = item.getCustomName();
+        String text = name == null ? null : name.getString();
+        System.out.println("[gametest] label over " + which + ": " + text);
+        if (!labeled) {
+            if (text != null) {
+                throw new AssertionError("Unexpected label over " + which + ": " + text);
+            }
+        } else if (text == null || !item.isCustomNameVisible()) {
+            throw new AssertionError("No label over " + which);
+        } else if (!text.matches("\\d+:\\d\\d")) {
+            throw new AssertionError("Not an exact time over " + which + ": " + text);
+        }
+    }
+
+    private static ItemEntity find(Minecraft client, Item which) {
+        for (Entity entity : client.level.entitiesForRendering()) {
+            if (entity instanceof ItemEntity item && item.getItem().is(which)) {
+                return item;
+            }
+        }
+        throw new AssertionError("No " + which + " in the world");
     }
 
     private static void checkStatus() {

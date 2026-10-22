@@ -7,8 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 
 /**
- * The client half on every loader: counts the clocks down, says hello to a server with the mod and forgets
- * items that are gone. The loader glue calls these from its events.
+ * The client half on every loader: counts the clocks down, says hello to a server with the mod, blinks and
+ * labels the items ({@link ItemLook}) and forgets items that are gone. The loader glue calls these from its
+ * events.
  */
 public final class ClientTicker {
 
@@ -35,11 +36,13 @@ public final class ClientTicker {
             connection = now;
             helloSent = false;
             CLOCKS.clear();
+            ItemLook.clear();
         }
         if (mc.level != level) {
             // Another world or dimension: entity ids start over
             level = mc.level;
             CLOCKS.clear();
+            ItemLook.clear();
         }
         if (now == null || level == null) {
             return;
@@ -54,5 +57,6 @@ public final class ClientTicker {
             ClientLevel l = level;
             CLOCKS.retain(id -> l.getEntity(id) != null);
         }
+        ItemLook.tick(mc, level);
     }
 }

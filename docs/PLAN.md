@@ -61,6 +61,8 @@ ClearDespawn, ClearDespawn Reborn, Despawn Notifier, FadingLoot, Item Despawn Ti
 - **Forge 1.20.1 has no player language on the server**, so `/despawnindicator` answers in English there.
 - **The publish list includes Forge 1.21** for the Forge/NeoForge file, because the stores take one list of game versions per file and NeoForge needs 1.21 – 1.21.1. The jar declares no Forge 1.21 support and does not load there; this is said in the README and can be split into two uploads later.
 - **The client-only estimate** is wrong for items that were already lying there; the `≈` mark and the README say so.
+- **Blinking replaces the item renderer** with a subclass of the vanilla one that skips hidden items. A mod that registers its own item renderer wins or loses by load order; the label does not depend on it. Minecraft 1.21.2 added render states to the vanilla renderer; the subclass only inherits them, and the client gametest runs on 1.21.8 to check that the 1.21 build still works there.
+- **Server resync.** The client counts down on its own ticks; the server resends the clocks of items within 32 blocks of each player with the mod every 5 seconds, so lag on either side does not add up.
 
 ---
 
@@ -121,3 +123,5 @@ ClearDespawn, ClearDespawn Reborn, Despawn Notifier, FadingLoot, Item Despawn Ti
 - **В Forge 1.20.1 сервер не знает язык игрока**, поэтому `/despawnindicator` там отвечает по-английски.
 - **В списке версий для публикации есть Forge 1.21** у файла Forge/NeoForge: площадки принимают один список версий игры на файл, а NeoForge нужны 1.21 – 1.21.1. Jar не заявляет поддержку Forge 1.21 и там не загружается; это сказано в README, позже можно разделить на две загрузки.
 - **Оценка только на клиенте** неверна для предметов, которые уже лежали; об этом говорят значок `≈` и README.
+- **Мигание заменяет отрисовщик предметов** подклассом ванильного, который пропускает скрытые предметы. Мод, регистрирующий свой отрисовщик предметов, выигрывает или проигрывает по порядку загрузки; подпись от этого не зависит. В Minecraft 1.21.2 у ванильного отрисовщика появились render state; подкласс их только наследует, а клиентский gametest идёт на 1.21.8 и проверяет, что сборка 1.21 там работает.
+- **Повторная синхронизация.** Клиент отсчитывает время по своим тикам; сервер каждые 5 секунд заново отправляет часы предметов в 32 блоках от каждого игрока с модом, поэтому лаги с обеих сторон не накапливаются.
