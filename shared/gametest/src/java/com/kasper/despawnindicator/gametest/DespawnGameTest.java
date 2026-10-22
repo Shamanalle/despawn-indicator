@@ -252,10 +252,14 @@ public class DespawnGameTest implements FabricClientGameTest {
         }
     }
 
-    /** The file is looked at once a second. */
+    /**
+     * The file is looked at once a second. How items look is worked out at the end of a tick, so one more tick
+     * passes after the new style is read: until then the items look as the old style had them.
+     */
     private static void waitForStyle(ClientGameTestContext context, ClientSettings.Style style) {
         for (int i = 0; i < 60; i++) {
             if (context.computeOnClient(client -> ClientConfig.get().style) == style) {
+                context.waitTick();
                 return;
             }
             context.waitTick();
