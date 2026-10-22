@@ -11,7 +11,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 
 /**
  * The vanilla item renderer, except that an item about to despawn is skipped on the frames it blinks out, or
- * drawn smaller while it fades ({@link ItemLook}). Fabric, Minecraft 1.18.2 - 1.19.4.
+ * drawn smaller while it fades ({@link ItemLook}). Fabric, Minecraft 1.17.1 - 1.19.4.
  */
 public class BlinkingItemRenderer extends ItemEntityRenderer {
 

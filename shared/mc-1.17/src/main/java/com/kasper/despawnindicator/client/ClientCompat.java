@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 
-/** The client side of {@link com.kasper.despawnindicator.Compat}: Minecraft 1.18.2. */
+/** The client side of {@link com.kasper.despawnindicator.Compat}: Minecraft 1.17.1 - 1.18.2. */
 public final class ClientCompat {
 
     private ClientCompat() {

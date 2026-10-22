@@ -14,8 +14,10 @@ on:
       - 'versions/fabric/**'
       - 'shared/mc/**'
       - 'shared/fabric/**'
-      - 'shared/fabric-1.18/**'
+      - 'shared/fabric-1.17/**'
+      - 'shared/fabric-command-v1/**'
       - 'shared/fabric-command-v2/**'
+      - 'shared/mc-1.17/**'
       - 'shared/mc-1.19/**'
       - 'shared/mc-1.20/**'
       - 'common/src/main/**'
@@ -41,7 +43,8 @@ jobs:
         id: list
         run: |
           # module, its prefix in gradle.properties, its jar's suffix, the first and the last version (none: open)
-          bands='fabric-1.18 mc1182 mc1.18.2 1.18.2 1.18.2
+          bands='fabric-1.17 mc1171 mc1.17.1 1.17.1 1.17.1
+          fabric-1.18 mc1182 mc1.18.2 1.18.2 1.18.2
           fabric-1.19 mc1190 mc1.19-1.19.3 1.19 1.19.3
           fabric-1.19.4 mc1194 mc1.19.4 1.19.4 1.19.4
           fabric-1.20 mc1200 mc1.20-1.20.1 1.20 1.20.1

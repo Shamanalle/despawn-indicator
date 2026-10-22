@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 
-/** The {@link Canvas} over a PoseStack and vanilla's GuiComponent, Minecraft 1.18.2 - 1.19.4 (before GuiGraphics). */
+/** The {@link Canvas} over a PoseStack and vanilla's GuiComponent, Minecraft 1.17.1 - 1.19.4 (before GuiGraphics). */
 public final class GuiCanvas implements Canvas {
 
     private final PoseStack pose;

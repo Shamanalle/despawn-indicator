@@ -3,9 +3,8 @@ plugins {
     id 'java'
 }
 
-// Minecraft 1.18.2 (Java 17). The channels, the item renderer and the HUD are the same as on 1.19.x
-// (shared/fabric-1.18). Its own are Compat and ClientCompat (texts and sounds changed in 1.19) and
-// ModCommands (Fabric API has only the v1 command API). Fabric API for 1.18.2 has no client gametest,
-// so CI starts this band on a server only.
-ext.band = [target: 'mc1.18.2', props: 'mc1182', java: 17, gametest: false, ownCompat: true, commandV1: true, shared: ['fabric-1.18']]
+// Minecraft 1.18.2 (Java 17). The same sources as the 1.17.1 band: the channels, the item renderer and the HUD
+// of 1.17.1 - 1.19.4 (shared/fabric-1.17), the texts and sounds of 1.17.1 - 1.18.2 (shared/mc-1.17) and the v1
+// command API. Fabric API for 1.18.2 has no client gametest, so CI starts this band on a server only.
+ext.band = [target: 'mc1.18.2', props: 'mc1182', java: 17, gametest: false, ownCompat: true, commandV1: true, shared: ['fabric-1.17', 'mc-1.17']]
 apply from: "${rootDir}/gradle/fabric-band.gradle"
