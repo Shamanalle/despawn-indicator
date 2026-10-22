@@ -1,9 +1,7 @@
 package com.kasper.despawnindicator;
 
 import com.kasper.despawnindicator.server.ServerClocks;
-import com.kasper.despawnindicator.server.StatusCommand;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
@@ -33,7 +31,7 @@ public class DespawnIndicatorMod implements ModInitializer {
         ServerTickEvents.END_SERVER_TICK.register(ServerClocks::endTick);
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> ServerClocks.left(handler.player));
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> ServerClocks.stopped());
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> StatusCommand.register(dispatcher));
+        ModCommands.register();
         ModLog.info(DespawnIndicator.NAME + " " + BuildInfo.version() + " loaded");
     }
 }

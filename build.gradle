@@ -6,6 +6,7 @@ plugins {
 // (MergeJars, see mergeFabric below), which picks the band of the running Minecraft at startup. "java" is
 // the class file version the band may use (52 = Java 8, 61 = 17, 65 = 21, 69 = 25).
 def fabricBands = [
+        [id: 'mc1_18', project: ':fabric-1.18', target: 'mc1.18.2', java: 61],
         [id: 'mc1_19', project: ':fabric-1.19', target: 'mc1.19-1.19.3', java: 61],
         [id: 'mc1_19_4', project: ':fabric-1.19.4', target: 'mc1.19.4', java: 61],
         [id: 'mc1_20', project: ':fabric-1.20', target: 'mc1.20-1.20.1', java: 61],
@@ -16,7 +17,7 @@ def fabricBands = [
         [id: 'mc1_21_9', project: ':fabric-1.21.9', target: 'mc1.21.9-1.21.11', java: 65],
         [id: 'mc26', project: ':fabric-26', target: 'mc26.x', java: 69],
 ]
-def fabricUniversalName = "despawn-indicator-fabric-${project.mod_version}+mc1.19-26.x.jar"
+def fabricUniversalName = "despawn-indicator-fabric-${project.mod_version}+mc1.18-26.x.jar"
 
 // The Forge and NeoForge bands, each a full build against its own Minecraft: they go into one universal jar
 // (mergeForge below). Forge and NeoForge read every class of a jar at startup and skip the ones their ASM cannot
