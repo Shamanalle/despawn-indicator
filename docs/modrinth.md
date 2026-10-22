@@ -6,6 +6,8 @@ Items on the ground vanish after five minutes, and Minecraft never says how long
 - **After death:** a timer in the corner counts down until your dropped items vanish, with an arrow, the distance and the coordinates. It turns yellow in the last minute and blinks red in the last 15 seconds, and goes away once you pick everything up.
 - **`/despawnindicator`** tells a server owner how many online players have the mod.
 
+![Dropped items with the time each has left above them](https://raw.githubusercontent.com/Shamanalle/despawn-indicator/main/docs/images/timers.png)
+
 Three files cover everything: one for Fabric and Quilt (Minecraft 1.16.5 – 1.21.11 and 26.1 – 26.3, needs Fabric API), one for Forge 1.20.1 and NeoForge 1.20.1 – 26.3, and a server plugin for Paper, Folia and Spigot 1.16.5 – 26.3.
 
 [Source and details](https://github.com/Shamanalle/despawn-indicator) · [Bugs and ideas](https://github.com/Shamanalle/despawn-indicator/issues)

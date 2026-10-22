@@ -49,6 +49,8 @@ That is enough for singleplayer and for any server. On a server without the mod 
 
 ## What it does
 
+<img src="docs/images/timers.png" width="640" alt="Dropped items with the time each has left above them: 4:54 on gold, 0:09 in red on a diamond about to despawn">
+
 - **Blinking:** an item blinks during its last 20 seconds, faster toward the end. It is drawn by skipping frames rather than by transparency, so it looks the same with shaders.
 - **Fading** (`style=fade`): instead of blinking, an item shrinks and grows back during its last 20 seconds, faster toward the end, but never vanishes. It is only drawn smaller, so this too works with shaders. The death loot timer fades in and out.
 - **Time label:** `0:42` above an item when you look at it (up to 24 blocks away), and above every item within 8 blocks while you sneak (the nearest 32). White, yellow in the last minute, red in the last 20 seconds. A labelled item stops blinking so the label can be read. Items that never despawn and items that already have a name show nothing. The label is the item's name tag, set on your client only.

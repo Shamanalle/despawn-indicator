@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "file": "docs/images/timers.png",
+    "title": "Time left above dropped items",
+    "description": "Sneak near dropped items to see how long each has left; the last seconds turn red.",
+    "featured": true
+  },
+  {
+    "file": "docs/images/look.png",
+    "title": "Look at an item",
+    "description": "Looking at a dropped item shows its time left above it.",
+    "featured": false
+  },
+  {
+    "file": "docs/images/death-timer.png",
+    "title": "Death loot timer",
+    "description": "After you die, a timer in the corner counts down until your items vanish, with an arrow, the distance and the coordinates.",
+    "featured": false
+  },
+  {
+    "file": "docs/images/server-status.png",
+    "title": "/despawnindicator",
+    "description": "The command tells a server owner how many online players have the mod and when items despawn there.",
+    "featured": false
+  }
+]
