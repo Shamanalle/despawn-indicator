@@ -23,7 +23,7 @@
 
 1. **Skeleton** (this PR): the modules above, the protocol and the server half on all four priority targets, `/despawnindicator`, CI (build, oldest loaders, 26.x link check, server smoke on 12 loader/version pairs, client gametest under xvfb), release and store workflows, README / CONTRIBUTING / CHANGELOG.
 2. **MVP → 0.1.0**: blinking in the last 20 s (frame skip), a time label when you look at an item or sneak near it, the client-only estimate (`≈`), exact times in singleplayer and with the server mod; gametest screenshots of both; release on Modrinth and CurseForge.
-3. **Death loot HUD**: after you die, a HUD line with the time your drops have left and an arrow toward them.
+3. **Death loot HUD** (done): after you die, a timer in the top left with the time until the first of your drops despawns, an arrow, the distance, the coordinates and the dimension; yellow in the last minute, blinking red in the last 15 s, gone once the items are picked up or despawn. A server with the mod tracks the drops (`DeathLoot`, protocol 2) and sends updates only when the client's count would drift; without it the client guesses (`≈`). Client settings (warning time, style, when labels show, death HUD, sound) and a server option (clocks for all items or only your own) live in `.properties` files under `config/`. Gametest: dies, respawns 30 blocks away, checks the timer and that it goes when the items are picked up.
 4. **Plugin** for Paper 1.16.5+, Folia, Spigot: the same hello/clocks channels; reads Paper's `alt-item-despawn-rate` (per item type, through reflection, because the config API differs between versions) and Spigot's `item-despawn-rate`.
 5. **Shader-safe fade** as an option next to the frame-skip blink; checked with Iris/Oculus.
 6. **More versions**: 1.16.5, 1.17.1, 1.18.2, 1.19.2/1.19.4, 1.20.4 – 1.20.6 and the rest of 26.x as they come out.
@@ -50,6 +50,9 @@
 - **Two jars from the first release**, not one per version: fewer files for players to choose from and one upload per loader family.
 - **13 languages from the start**, with a test that keeps keys and placeholders in step, because the texts are few and short.
 - **Client-side estimate is marked `≈`.** Competitors either show nothing without a server mod or show a guess as if it were exact.
+- **Settings in a `.properties` file, no settings screen yet.** The file is read again when it changes, so edits apply in game; a screen needs a GUI per loader and version, and Mod Menu only covers Fabric. The death timer guess is also marked `≈`.
+- **The `fade` style fades the death timer only;** items still blink until the shader-safe fade (phase 5) exists.
+- **Screens are drawn through our own `Canvas`.** `GuiGraphics` changed between 1.20.1, 1.21 and 26.x (26.x builds render state instead of drawing); each band has a small `GuiCanvas`, and `LootOverlay` in `shared/mc` stays the same everywhere.
 
 ### Competitors (Modrinth, CurseForge)
 
@@ -63,6 +66,8 @@ ClearDespawn, ClearDespawn Reborn, Despawn Notifier, FadingLoot, Item Despawn Ti
 - **The client-only estimate** is wrong for items that were already lying there; the `≈` mark and the README say so.
 - **Blinking replaces the item renderer** with a subclass of the vanilla one that skips hidden items. A mod that registers its own item renderer wins or loses by load order; the label does not depend on it. Minecraft 1.21.2 added render states to the vanilla renderer; the subclass only inherits them, and the client gametest runs on 1.21.8 to check that the 1.21 build still works there. On Minecraft 26.x one jar covers 26.1 - 26.3 while 26.3 added the partial tick to `shouldRender`: the 26.x subclass overrides both forms, the older one calls the vanilla method through a method handle, and the compatibility check lists the resulting differences as reviewed (`.github/scripts/linkcheck-allowed-26.txt`).
 - **Server resync.** The client counts down on its own ticks; the server resends the clocks of items within 32 blocks of each player with the mod every 5 seconds, so lag on either side does not add up.
+- **HUD API drift.** Fabric 1.21 – 1.21.5 has only `HudRenderCallback`, 1.21.6+ has `HudElementRegistry` (chosen at runtime; the gametest covers the second), 26.x extracts render state, Forge and NeoForge have their own overlay events. Each is a few lines per band; the 26.x link check catches renames.
+- **The client-only death timer** cannot see that unloaded chunks stop the items' clock, and counts items that merged with others or went through a portal as gone; the `≈` mark and the README say so. The server half follows the items by UUID across chunk unloads.
 
 ---
 
@@ -85,7 +90,7 @@ ClearDespawn, ClearDespawn Reborn, Despawn Notifier, FadingLoot, Item Despawn Ti
 
 1. **Каркас** (этот PR): модули выше, протокол и серверная часть на всех четырёх приоритетных целях, `/despawnindicator`, CI (сборка, самые старые загрузчики, проверка линковки 26.x, запуск серверов на 12 парах загрузчик/версия, клиентский gametest под xvfb), workflow релиза и площадок, README / CONTRIBUTING / CHANGELOG.
 2. **MVP → 0.1.0**: мигание последние 20 с (пропуск кадров), подпись со временем, когда смотришь на предмет или крадёшься рядом, оценка без серверного мода (`≈`), точное время в одиночной игре и с модом на сервере; скриншоты из gametest; релиз на Modrinth и CurseForge.
-3. **HUD вещей после смерти**: после смерти строка HUD со временем, оставшимся вашим вещам, и стрелка к ним.
+3. **HUD вещей после смерти** (сделано): после смерти таймер слева вверху со временем до исчезновения первой из ваших вещей, стрелкой, расстоянием, координатами и измерением; жёлтый в последнюю минуту, мигает красным последние 15 с, пропадает, когда вещи подобраны или исчезли. Сервер с модом следит за вещами (`DeathLoot`, протокол 2) и шлёт обновление, только когда счёт клиента разошёлся бы; без него клиент угадывает (`≈`). Настройки клиента (время предупреждения, стиль, когда показывать подписи, HUD после смерти, звук) и опция сервера (часы для всех предметов или только своих) лежат в файлах `.properties` в `config/`. Gametest: умирает, возрождается в 30 блоках, проверяет таймер и что он пропадает, когда вещи подобраны.
 4. **Плагин** для Paper 1.16.5+, Folia, Spigot: те же каналы hello/clocks; читает `alt-item-despawn-rate` из Paper (по типам предметов, через рефлексию, потому что API конфига меняется между версиями) и `item-despawn-rate` из Spigot.
 5. **Плавное исчезновение, безопасное для шейдеров**, как опция рядом с миганием; проверка с Iris/Oculus.
 6. **Больше версий**: 1.16.5, 1.17.1, 1.18.2, 1.19.2/1.19.4, 1.20.4 – 1.20.6 и новые 26.x по мере выхода.
@@ -112,6 +117,9 @@ ClearDespawn, ClearDespawn Reborn, Despawn Notifier, FadingLoot, Item Despawn Ti
 - **Два jar с первого релиза**, а не по файлу на версию: игрокам проще выбрать, и одна загрузка на семейство загрузчиков.
 - **13 языков сразу** и тест, который держит ключи и плейсхолдеры в согласии: текстов мало, и они короткие.
 - **Оценка на клиенте помечена `≈`.** Конкуренты либо ничего не показывают без серверного мода, либо выдают догадку за точное время.
+- **Настройки в файле `.properties`, экрана настроек пока нет.** Файл перечитывается при изменении, так что правки действуют сразу в игре; экран требует GUI под каждый загрузчик и версию, а Mod Menu есть только на Fabric. Догадка таймера после смерти тоже помечена `≈`.
+- **Стиль `fade` плавно гасит только таймер после смерти;** предметы мигают, пока нет безопасного для шейдеров исчезновения (этап 5).
+- **Экраны рисуются через свой `Canvas`.** `GuiGraphics` менялся между 1.20.1, 1.21 и 26.x (в 26.x строится render state, а не рисуется); в каждой полосе свой небольшой `GuiCanvas`, а `LootOverlay` в `shared/mc` везде один.
 
 ### Конкуренты (Modrinth, CurseForge)
 
@@ -125,3 +133,5 @@ ClearDespawn, ClearDespawn Reborn, Despawn Notifier, FadingLoot, Item Despawn Ti
 - **Оценка только на клиенте** неверна для предметов, которые уже лежали; об этом говорят значок `≈` и README.
 - **Мигание заменяет отрисовщик предметов** подклассом ванильного, который пропускает скрытые предметы. Мод, регистрирующий свой отрисовщик предметов, выигрывает или проигрывает по порядку загрузки; подпись от этого не зависит. В Minecraft 1.21.2 у ванильного отрисовщика появились render state; подкласс их только наследует, а клиентский gametest идёт на 1.21.8 и проверяет, что сборка 1.21 там работает.
 - **Повторная синхронизация.** Клиент отсчитывает время по своим тикам; сервер каждые 5 секунд заново отправляет часы предметов в 32 блоках от каждого игрока с модом, поэтому лаги с обеих сторон не накапливаются.
+- **Изменения API HUD.** В Fabric 1.21 – 1.21.5 есть только `HudRenderCallback`, в 1.21.6+ — `HudElementRegistry` (выбор при запуске; gametest проверяет второй), в 26.x извлекается render state, у Forge и NeoForge свои события оверлеев. На полосу это несколько строк; проверка линковки 26.x ловит переименования.
+- **Таймер после смерти без серверного мода** не видит, что в выгруженных чанках часы предметов стоят, и считает пропавшими предметы, слившиеся с другими или ушедшие в портал; об этом говорят значок `≈` и README. Серверная часть находит предметы по UUID и после выгрузки чанка.

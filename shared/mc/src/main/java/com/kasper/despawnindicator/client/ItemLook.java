@@ -2,6 +2,7 @@ package com.kasper.despawnindicator.client;
 
 import com.kasper.despawnindicator.Blink;
 import com.kasper.despawnindicator.ClientClocks;
+import com.kasper.despawnindicator.ClientSettings;
 import com.kasper.despawnindicator.DespawnIndicator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -13,14 +14,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * How each item on the ground looks this tick: which items blink out of sight, and (through
- * {@link ItemLabels}) which ones carry a time label. Worked out once a tick; the item renderer of each loader
+ * How each item on the ground looks this tick: which items blink out of sight in their last seconds
+ * ({@link ClientSettings#warnSeconds}), and (through {@link ItemLabels}) which ones carry a time label. Worked out once a tick; the item renderer of each loader
  * only asks {@link #hidden}.
  */
 public final class ItemLook {
-
-    /** The blinking covers the last 20 seconds. */
-    public static final double WARN_SECONDS = 20;
 
     private static Set<Integer> hidden = Collections.emptySet();
 
@@ -33,8 +31,13 @@ public final class ItemLook {
     }
 
     /** The end of a client tick in {@code level}. */
-    static void tick(Minecraft mc, ClientLevel level) {
-        ItemLabels.update(mc, level);
+    static void tick(Minecraft mc, ClientLevel level, ClientSettings settings) {
+        ItemLabels.update(mc, level, settings);
+        if (settings.style == ClientSettings.Style.LABEL) {
+            // Labels instead of blinking (ItemLabels)
+            hidden = Collections.emptySet();
+            return;
+        }
         Set<Integer> next = new HashSet<>();
         for (Entity e : level.entitiesForRendering()) {
             if (!(e instanceof ItemEntity)) {
@@ -43,8 +46,9 @@ public final class ItemLook {
             ItemEntity item = (ItemEntity) e;
             // Reading starts the estimate of an item the server says nothing about
             ClientClocks.Reading r = read(item);
-            if (!r.unlimited && !ItemLabels.labeled(item)
-                    && !Blink.shown(r.ticksLeft / (double) DespawnIndicator.TICKS_PER_SECOND, WARN_SECONDS)) {
+            // The fading style fades the death loot timer; items blink for now
+            if (!r.unlimited && !ItemLabels.labeled(item) && !Blink.shown(
+                    r.ticksLeft / (double) DespawnIndicator.TICKS_PER_SECOND, settings.warnSeconds)) {
                 next.add(item.getId());
             }
         }

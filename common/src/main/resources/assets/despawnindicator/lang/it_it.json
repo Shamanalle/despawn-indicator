@@ -2,5 +2,12 @@
   "command.despawnindicator.status.title": "Despawn Indicator %s",
   "command.despawnindicator.status.players": "Giocatori con la mod: %s su %s online. Vedono esattamente quando spariscono gli oggetti a terra.",
   "command.despawnindicator.status.lifetime": "Gli oggetti lasciati cadere spariscono qui dopo %s.",
-  "modmenu.descriptionTranslation.despawnindicator": "Gli oggetti a terra lampeggiano prima di sparire e mostrano il tempo rimasto. Con la mod anche sul server, il tempo è esatto."
+  "modmenu.descriptionTranslation.despawnindicator": "Gli oggetti a terra lampeggiano prima di sparire e mostrano il tempo rimasto. Con la mod anche sul server, il tempo è esatto.",
+  "gui.despawnindicator.loot.title": "Il bottino della morte sparisce tra %s",
+  "gui.despawnindicator.loot.paused": "in pausa",
+  "gui.despawnindicator.loot.unlimited": "Il bottino della morte non sparirà",
+  "gui.despawnindicator.loot.distance": "%s blocchi",
+  "gui.despawnindicator.dimension.overworld": "Sopramondo",
+  "gui.despawnindicator.dimension.the_nether": "Nether",
+  "gui.despawnindicator.dimension.the_end": "End"
 }

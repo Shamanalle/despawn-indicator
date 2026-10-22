@@ -2,5 +2,12 @@
   "command.despawnindicator.status.title": "Despawn Indicator %s",
   "command.despawnindicator.status.players": "Players with the mod: %s of %s online. They see exactly when items on the ground despawn.",
   "command.despawnindicator.status.lifetime": "Dropped items despawn after %s here.",
-  "modmenu.descriptionTranslation.despawnindicator": "Items on the ground blink before they despawn and show the time left. With the mod on the server too, the time is exact."
+  "modmenu.descriptionTranslation.despawnindicator": "Items on the ground blink before they despawn and show the time left. With the mod on the server too, the time is exact.",
+  "gui.despawnindicator.loot.title": "Death loot despawns in %s",
+  "gui.despawnindicator.loot.paused": "paused",
+  "gui.despawnindicator.loot.unlimited": "Death loot will not despawn",
+  "gui.despawnindicator.loot.distance": "%s blocks",
+  "gui.despawnindicator.dimension.overworld": "Overworld",
+  "gui.despawnindicator.dimension.the_nether": "The Nether",
+  "gui.despawnindicator.dimension.the_end": "The End"
 }

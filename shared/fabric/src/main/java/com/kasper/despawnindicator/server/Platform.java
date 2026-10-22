@@ -3,8 +3,11 @@ package com.kasper.despawnindicator.server;
 import com.kasper.despawnindicator.DespawnIndicator;
 import com.kasper.despawnindicator.ModNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
+
+import java.nio.file.Path;
 
 /** What the shared server code needs from the loader (Fabric). */
 public final class Platform {
@@ -30,5 +33,10 @@ public final class Platform {
         if (ServerPlayNetworking.canSend(player, ModNetworking.Clocks.TYPE)) {
             ServerPlayNetworking.send(player, new ModNetworking.Clocks(message));
         }
+    }
+
+    /** The game's config folder. */
+    public static Path configDir() {
+        return FabricLoader.getInstance().getConfigDir();
     }
 }

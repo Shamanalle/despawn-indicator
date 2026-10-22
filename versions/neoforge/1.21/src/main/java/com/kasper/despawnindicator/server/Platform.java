@@ -3,7 +3,10 @@ package com.kasper.despawnindicator.server;
 import com.kasper.despawnindicator.neoforge.NeoNetworking;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.network.PacketDistributor;
+
+import java.nio.file.Path;
 
 /** What the shared server code needs from the loader (NeoForge, Minecraft 1.21 - 1.21.1). */
 public final class Platform {
@@ -29,5 +32,10 @@ public final class Platform {
         if (player.connection.hasChannel(NeoNetworking.Clocks.TYPE)) {
             PacketDistributor.sendToPlayer(player, new NeoNetworking.Clocks(message));
         }
+    }
+
+    /** The game's config folder. */
+    public static Path configDir() {
+        return FMLPaths.CONFIGDIR.get();
     }
 }

@@ -6,8 +6,13 @@ package com.kasper.despawnindicator;
  */
 public final class HelloMessage {
 
-    /** The protocol of this build. A server answers a newer client in its own protocol, which the client reads. */
-    public static final int PROTOCOL = 1;
+    /**
+     * The protocol of this build. A server answers a newer client in its own protocol, which the client reads.
+     * 1: item clocks; 2: also the death loot timer ({@link LootMessage}).
+     */
+    public static final int PROTOCOL = 2;
+    /** The first protocol whose clients read {@link LootMessage}. */
+    public static final int LOOT = 2;
     private static final int MAX_VERSION_BYTES = 64;
 
     public final int protocol;

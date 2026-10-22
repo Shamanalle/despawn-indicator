@@ -2,5 +2,12 @@
   "command.despawnindicator.status.title": "Despawn Indicator %s",
   "command.despawnindicator.status.players": "Игроков с модом: %s из %s в сети. Они видят точное время, когда исчезнут предметы на земле.",
   "command.despawnindicator.status.lifetime": "Выброшенные предметы исчезают здесь через %s.",
-  "modmenu.descriptionTranslation.despawnindicator": "Предметы на земле мигают перед исчезновением и показывают, сколько им осталось. Если мод стоит и на сервере, время точное."
+  "modmenu.descriptionTranslation.despawnindicator": "Предметы на земле мигают перед исчезновением и показывают, сколько им осталось. Если мод стоит и на сервере, время точное.",
+  "gui.despawnindicator.loot.title": "Вещи после смерти исчезнут через %s",
+  "gui.despawnindicator.loot.paused": "на паузе",
+  "gui.despawnindicator.loot.unlimited": "Вещи после смерти не исчезнут",
+  "gui.despawnindicator.loot.distance": "%s бл.",
+  "gui.despawnindicator.dimension.overworld": "Верхний мир",
+  "gui.despawnindicator.dimension.the_nether": "Незер",
+  "gui.despawnindicator.dimension.the_end": "Энд"
 }

@@ -1,6 +1,7 @@
 package com.kasper.despawnindicator.client;
 
 import com.kasper.despawnindicator.ClientClocks;
+import com.kasper.despawnindicator.ClientSettings;
 import com.kasper.despawnindicator.DespawnIndicator;
 import com.kasper.despawnindicator.TimeText;
 import net.minecraft.ChatFormatting;
@@ -22,7 +23,9 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * The time label over an item: on the item the player looks at, and while sneaking on the items around them.
+ * The time label over an item: on the item the player looks at, and while sneaking on the items around them
+ * ({@link ClientSettings#labels}); in the label style also on the items in their last seconds, which then do
+ * not blink.
  * <p>
  * The label is the item's name tag, set on this client only (the server never hears of it). Name tags are
  * drawn the same way on every Minecraft version, while the renderer methods behind them changed several
@@ -59,9 +62,9 @@ final class ItemLabels {
         return LABELS.containsKey(item.getId());
     }
 
-    static void update(Minecraft mc, ClientLevel level) {
+    static void update(Minecraft mc, ClientLevel level, ClientSettings settings) {
         LocalPlayer player = mc.player;
-        Map<Integer, ItemEntity> targets = player == null ? new HashMap<>() : targets(player, level);
+        Map<Integer, ItemEntity> targets = player == null ? new HashMap<>() : targets(player, level, settings);
         for (Iterator<Map.Entry<Integer, Label>> i = LABELS.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry<Integer, Label> e = i.next();
             if (!targets.containsKey(e.getKey())) {
@@ -73,11 +76,11 @@ final class ItemLabels {
             }
         }
         for (ItemEntity item : targets.values()) {
-            show(item);
+            show(item, settings.warnSeconds);
         }
     }
 
-    private static void show(ItemEntity item) {
+    private static void show(ItemEntity item, int warnSeconds) {
         ClientClocks.Reading r = ItemLook.read(item);
         Label old = LABELS.get(item.getId());
         if (old != null && item.getCustomName() != old.name) {
@@ -99,17 +102,17 @@ final class ItemLabels {
         if (old == null && item.getCustomName() != null) {
             return;
         }
-        Component name = Component.literal(text).withStyle(colour(r.ticksLeft));
+        Component name = Component.literal(text).withStyle(colour(r.ticksLeft, warnSeconds));
         boolean wasVisible = old != null ? old.wasVisible : item.isCustomNameVisible();
         item.setCustomName(name);
         item.setCustomNameVisible(true);
         LABELS.put(item.getId(), new Label(name, text, wasVisible));
     }
 
-    private static ChatFormatting colour(int ticksLeft) {
+    private static ChatFormatting colour(int ticksLeft, int warnSeconds) {
         // Rounded up like the text, so "0:20" is the first red one
         int seconds = (ticksLeft + DespawnIndicator.TICKS_PER_SECOND - 1) / DespawnIndicator.TICKS_PER_SECOND;
-        if (seconds <= ItemLook.WARN_SECONDS) {
+        if (seconds <= warnSeconds) {
             return ChatFormatting.RED;
         }
         return seconds <= 60 ? ChatFormatting.YELLOW : ChatFormatting.WHITE;
@@ -123,7 +126,7 @@ final class ItemLabels {
     }
 
     /** The items to label now, by entity id. */
-    private static Map<Integer, ItemEntity> targets(LocalPlayer player, ClientLevel level) {
+    private static Map<Integer, ItemEntity> targets(LocalPlayer player, ClientLevel level, ClientSettings settings) {
         Map<Integer, ItemEntity> out = new HashMap<>();
         Vec3 eye = new Vec3(player.getX(), player.getEyeY(), player.getZ());
         Vec3 end = eye.add(player.getViewVector(1.0F).scale(LOOK_REACH));
@@ -136,7 +139,9 @@ final class ItemLabels {
         double lookedAt = blockHit;
         List<ItemEntity> near = new ArrayList<>();
         double reach = (LOOK_REACH + 1) * (LOOK_REACH + 1);
-        boolean sneaking = player.isShiftKeyDown();
+        boolean sneaking = settings.labels.sneak() && player.isShiftKeyDown();
+        boolean warn = settings.style == ClientSettings.Style.LABEL;
+        double warnTicks = settings.warnSeconds * (double) DespawnIndicator.TICKS_PER_SECOND;
         for (Entity e : level.entitiesForRendering()) {
             if (!(e instanceof ItemEntity) || e.isRemoved()) {
                 continue;
@@ -148,6 +153,14 @@ final class ItemLabels {
             }
             if (sneaking && d <= SNEAK_RADIUS * SNEAK_RADIUS) {
                 near.add(item);
+            } else if (warn) {
+                ClientClocks.Reading r = ItemLook.read(item);
+                if (!r.unlimited && r.ticksLeft <= warnTicks) {
+                    near.add(item);
+                }
+            }
+            if (!settings.labels.look()) {
+                continue;
             }
             Optional<Vec3> hit = item.getBoundingBox().inflate(LOOK_SLACK).clip(eye, end);
             if (hit.isPresent()) {
@@ -162,6 +175,7 @@ final class ItemLabels {
             out.put(looked.getId(), looked);
         }
         if (near.size() > SNEAK_MAX) {
+            // The nearest first, the warned ones too
             near.sort((a, b) -> Double.compare(a.distanceToSqr(player), b.distanceToSqr(player)));
             near = near.subList(0, SNEAK_MAX);
         }
