@@ -1,0 +1,15 @@
+# Differences between NeoForge 26.3 (the reference) and older NeoForge 26.x that were reviewed and are safe.
+# One key per line as LinkCheck prints it after "DIFF".
+
+# BlinkingItemRenderer overrides shouldRender in both forms: with the partial tick (26.3) and without
+# (26.1 - 26.2, reached through a method handle). Each form overrides nothing on the versions that lack it
+# and is then never called, and so is the 26.3 super call inside it.
+method net/minecraft/client/renderer/entity/ItemEntityRenderer.shouldRender(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/client/renderer/culling/Frustum;DDDF)Z
+override com/kasper/despawnindicator/client/BlinkingItemRenderer.shouldRender(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/client/renderer/culling/Frustum;DDD)Z
+override com/kasper/despawnindicator/client/BlinkingItemRenderer.shouldRender(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/client/renderer/culling/Frustum;DDDF)Z
+
+# GuiCanvas asks Hud.isHidden() whether the HUD is hidden (F1) only when the hideGui option is gone (26.2 on);
+# on 26.1, which has no Hud, it reads that option through a method handle.
+field net/minecraft/client/gui/Gui.hud:Lnet/minecraft/client/gui/Hud;
+method net/minecraft/client/gui/Hud.isHidden()Z
+type net/minecraft/client/gui/Hud

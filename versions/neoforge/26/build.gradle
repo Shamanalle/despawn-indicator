@@ -39,7 +39,8 @@ dependencies {
 }
 
 // Java 21 class files, though Minecraft 26.x needs Java 25: the universal jar it goes into is also read by Forge 1.20.1,
-// whose ASM stops at Java 21 (see forgeBands in the root build.gradle)
+// whose ASM stops at Java 21 (see forgeBands in the root build.gradle). NeoForge and Minecraft are Java 25 libraries,
+// so the classpath does not ask for Java 21 ones (disableAutoTargetJvm).
 tasks.withType(JavaCompile).configureEach {
     options.release = 21
     options.encoding = 'UTF-8'
@@ -48,6 +49,7 @@ tasks.withType(JavaCompile).configureEach {
 java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
+    disableAutoTargetJvm()
 }
 
 processResources {

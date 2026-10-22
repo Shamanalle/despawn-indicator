@@ -67,6 +67,8 @@ jobs:
           - { module: neoforge-1.21.6, key: nf1216_neoforge_oldest }
           - { module: neoforge-1.21.9, key: nf1219_neoforge_oldest }
           - { module: neoforge-1.21.11, key: nf12111_neoforge_oldest }
+          # No neoforge-26: it calls classes 26.1 lacks where it runs only on newer versions (GuiCanvas),
+          # so it cannot compile against 26.1; NeoForge compatibility checks it there instead
     steps:
       - name: Checkout
         uses: actions/checkout@v4
