@@ -1,0 +1,8 @@
+plugins {
+    id 'fabric-loom' version '1.18.2'
+    id 'java'
+}
+
+// Minecraft 1.21.2 - 1.21.8, compiled against 1.21.8: items are drawn from a render state (extractRenderState, render).
+ext.band = [target: 'mc1.21.2-1.21.8', props: 'mc1212', gametest: true]
+apply from: "${rootDir}/gradle/fabric-band.gradle"

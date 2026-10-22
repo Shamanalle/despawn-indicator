@@ -78,8 +78,8 @@ retry 1 7 -- "${work}/cmd.sh" "${work}/runs" "error: cannot find symbol"
 retry 1 7 -- "${work}/cmd.sh" "${work}/runs" "Could not find core-3.6.7.jar"
 retry 1 0 -- "${work}/cmd.sh" "${work}/runs" "${net}" 1
 # Nor after the checks began, even when the output then names a network failure
-retry 1 7 --started '^> Task :fabric-1\.21:runClientGameTest' -- "${work}/cmd.sh" "${work}/runs" "> Task :fabric-1.21:runClientGameTest\n${net}"
-retry 2 7 --started '^> Task :fabric-1\.21:runClientGameTest' -- "${work}/cmd.sh" "${work}/runs" "> Task :fabric-1.21:compileJava\n${net}"
+retry 1 7 --started '^> Task :fabric-1\.21\.2:runClientGameTest' -- "${work}/cmd.sh" "${work}/runs" "> Task :fabric-1.21.2:runClientGameTest\n${net}"
+retry 2 7 --started '^> Task :fabric-1\.21\.2:runClientGameTest' -- "${work}/cmd.sh" "${work}/runs" "> Task :fabric-1.21.2:compileJava\n${net}"
 
 if [ "${failed}" != 0 ]; then
   exit 1

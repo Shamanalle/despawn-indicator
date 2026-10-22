@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "despawnindicator-gametest",
+  "version": "1.0.0",
+  "name": "Despawn Indicator in-game tests",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-client-gametest": [
+      "com.kasper.despawnindicator.gametest.DespawnGameTest"
+    ]
+  },
+  "depends": {
+    "despawnindicator": "*",
+    "fabric-client-gametest-api-v1": "*"
+  }
+}

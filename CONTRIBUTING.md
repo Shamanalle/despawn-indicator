@@ -16,7 +16,7 @@ git clone https://github.com/Shamanalle/despawn-indicator.git
 cd despawn-indicator
 ./gradlew :common:test             # fast: protocol, countdown, texts, translations
 ./gradlew build                    # every target, the two jars in build/libs/
-./gradlew :fabric-1.21:runClient   # or :fabric-26, :forge-1.20.1, :neoforge-1.21; runServer for the server side
+./gradlew :fabric-1.21.2:runClient   # or :fabric-1.21, :fabric-1.21.9, :fabric-26, :forge-1.20.1, :neoforge-1.21; runServer for the server side
 ```
 
 ### Where code lives
@@ -27,15 +27,15 @@ cd despawn-indicator
 | `common-j8/` | not shipped yet | the same sources as Java 8 bytecode (Jabel), for the bands of Minecraft 1.16.5 – 1.17 that come later |
 | `shared/mc/` | every Fabric, Forge and NeoForge band | server side (`ServerClocks`: what to send and when; `StatusCommand`), client tick (`ClientTicker`) |
 | `shared/fabric/` | the Fabric bands | entrypoints and Fabric API events, `Platform` / `ClientPlatform` for sending |
-| `shared/gametest/` | `fabric-1.21`, `fabric-26` (client gametest) | drops items in a real world, checks their times and takes screenshots |
-| `versions/fabric/<band>/` (`1.21`, `26`) | the Fabric / Quilt jar; the Gradle project is `:fabric-<band>` | payload registration (`ModNetworking`; names differ in 26.x), `fabric.mod.json` |
+| `shared/gametest/` | `fabric-1.21.2`, `fabric-1.21.9`, `fabric-26` (client gametest) | drops items in a real world, checks their times and takes screenshots |
+| `versions/fabric/<band>/` (`1.21`, `1.21.2`, `1.21.9`, `26`) | the Fabric / Quilt jar; the Gradle project is `:fabric-<band>` | payload registration (`ModNetworking`; names differ in 26.x), the item renderer and the HUD hook (they changed in 1.21.2 and 1.21.9), `fabric.mod.json` |
 | `versions/forge/1.20.1/`, `versions/neoforge/1.21/` | the Forge / NeoForge jar; projects `:forge-1.20.1`, `:neoforge-1.21` | Forge and NeoForge hooks (`forge/`, `neoforge/`: entry, networking on the same channels and bytes, client), `Platform` with item lifespans, `mods.toml` / `neoforge.mods.toml`. Forge 1.20.1 runs with SRG names, so that band is remapped by `reobfJar` |
 | `universal/` | both jars | the dispatchers that pick a band at startup (`BandAdapter` for Fabric, `ForgeDispatcher` / `NeoForgeDispatcher`) |
 | `packaging/` | build only | `MergeJars`: merges the band jars into one, stores shared classes once and moves each band's own classes under `b/<band>/` |
 
 Rules of thumb:
 - Logic that does not need Minecraft goes into `common` and gets a unit test.
-- The Fabric 1.21 band is compiled against 1.21.8 but runs on 1.21 – 1.21.11. Before using a new Minecraft method there, check that its signature is the same on every 1.21.x release. Examples that are **not** stable: `Entity.level()`, `Entity.position()`, `GameProfile.getName()`.
+- Fabric 1.21.x has three bands, split where the way items are drawn changed: 1.21 – 1.21.1, 1.21.2 – 1.21.8 and 1.21.9 – 1.21.11. Each is compiled against the last version of its range (gradle.properties) and runs on all of them. Before using a new Minecraft or Fabric API method in `shared/`, check that its signature is the same on every release the bands cover; `.github/workflows/compat.yml` checks each band's jar on every release of its range. Examples that are **not** stable: `Entity.level()`, `Entity.position()`, `GameProfile.getName()`, `ServerLevel.getEntity(UUID)`, `SoundManager.play`.
 - Client and server exchange raw bytes on `despawnindicator:hello` (client → server) and `despawnindicator:clocks` (server → client). Every loader and the future plugin write exactly the same bytes; `ClockMessageTest` pins them down.
 - The server sends only to players who said hello, at the end of the server tick, so a burst of drops becomes one packet.
 
@@ -59,11 +59,11 @@ The repository description and topics live in `.github/about.json`. The *Reposit
 
 *In-game tests* (`.github/workflows/ingame.yml`) runs on every pull request and before every release:
 - **Servers:** `.github/scripts/server-smoke.sh` starts Fabric, Forge and NeoForge servers with the mod, runs `/despawnindicator` from the console and fails on a missing answer, bare text keys or an exception from the mod. Locally: `bash .github/scripts/server-smoke.sh fabric 1.21.1 build/libs/despawn-indicator-fabric-*+mc1.21-26.x.jar`.
-- **Client:** `./gradlew :fabric-1.21:runClientGameTest` (or `:fabric-26`) creates a world, drops a diamond that is about to despawn, an emerald that never despawns and a gold ingot, checks the times the client received, runs `/despawnindicator` and saves screenshots in `build/run/clientGameTest/screenshots/`. CI runs it under `xvfb-run` with Mesa's software OpenGL and Vulkan; the 1.21 client runs on Java 21.
+- **Client:** `./gradlew :fabric-1.21.2:runClientGameTest` (or `:fabric-1.21.9`, `:fabric-26`) creates a world, drops a diamond that is about to despawn, an emerald that never despawns and a gold ingot, checks the times the client received, runs `/despawnindicator` and saves screenshots in `build/run/clientGameTest/screenshots/`. CI runs it under `xvfb-run` with Mesa's software OpenGL and Vulkan; the 1.21.x clients run on Java 21.
 - Logs and screenshots are attached to each run as artifacts.
 - **Network failures:** a download that fails on the way (a timeout, a reset connection, HTTP 429 / 5xx) is tried once more and leaves a warning on the run: the build and the client before the game starts (`.github/scripts/net-retry.sh`, the second time with Maven Central through Google's mirror), the server's installer and first start. A failing test, a compile error and a missing file (404) fail at once.
 
-*Build & Verify* also compiles the Forge and NeoForge bands against the oldest loader they claim, and *Minecraft 26.x compatibility* checks that the 26.x build links against every 26.x release (`LinkCheck.java`).
+*Build & Verify* also compiles the Forge and NeoForge bands against the oldest loader they claim, and *Fabric compatibility* checks that each Fabric band's jar links against every release of its range (`LinkCheck.java`).
 
 ### Releases
 
@@ -100,7 +100,7 @@ git clone https://github.com/Shamanalle/despawn-indicator.git
 cd despawn-indicator
 ./gradlew :common:test             # быстро: протокол, отсчёт, тексты, переводы
 ./gradlew build                    # все версии, два jar в build/libs/
-./gradlew :fabric-1.21:runClient   # или :fabric-26, :forge-1.20.1, :neoforge-1.21; runServer для сервера
+./gradlew :fabric-1.21.2:runClient   # или :fabric-1.21, :fabric-1.21.9, :fabric-26, :forge-1.20.1, :neoforge-1.21; runServer для сервера
 ```
 
 ### Где какой код
@@ -111,15 +111,15 @@ cd despawn-indicator
 | `common-j8/` | пока никуда | те же исходники в байткоде Java 8 (Jabel), для будущих полос Minecraft 1.16.5 – 1.17 |
 | `shared/mc/` | во все полосы Fabric, Forge и NeoForge | сервер (`ServerClocks`: что и когда отправлять; `StatusCommand`), тик клиента (`ClientTicker`) |
 | `shared/fabric/` | в полосы Fabric | точки входа и события Fabric API, `Platform` / `ClientPlatform` для отправки |
-| `shared/gametest/` | `fabric-1.21`, `fabric-26` (клиентский gametest) | бросает предметы в настоящем мире, проверяет их время и делает скриншоты |
-| `versions/fabric/<полоса>/` (`1.21`, `26`) | jar для Fabric / Quilt; проект Gradle `:fabric-<полоса>` | регистрация пакетов (`ModNetworking`; в 26.x другие имена), `fabric.mod.json` |
+| `shared/gametest/` | `fabric-1.21.2`, `fabric-1.21.9`, `fabric-26` (клиентский gametest) | бросает предметы в настоящем мире, проверяет их время и делает скриншоты |
+| `versions/fabric/<полоса>/` (`1.21`, `1.21.2`, `1.21.9`, `26`) | jar для Fabric / Quilt; проект Gradle `:fabric-<полоса>` | регистрация пакетов (`ModNetworking`; в 26.x другие имена), отрисовщик предметов и подключение к HUD (менялись в 1.21.2 и 1.21.9), `fabric.mod.json` |
 | `versions/forge/1.20.1/`, `versions/neoforge/1.21/` | jar для Forge / NeoForge; проекты `:forge-1.20.1`, `:neoforge-1.21` | обработчики Forge и NeoForge (`forge/`, `neoforge/`: вход, сеть на тех же каналах и байтах, клиент), `Platform` со временем жизни предметов, `mods.toml` / `neoforge.mods.toml`. Forge 1.20.1 работает с именами SRG, поэтому эта полоса перемаппится `reobfJar` |
 | `universal/` | в оба jar | диспетчеры, выбирающие полосу при запуске (`BandAdapter` для Fabric, `ForgeDispatcher` / `NeoForgeDispatcher`) |
 | `packaging/` | только сборка | `MergeJars`: собирает jar полос в один, общие классы кладёт один раз, а собственные классы каждой полосы переносит в `b/<полоса>/` |
 
 Правила:
 - Логика без Minecraft живёт в `common` и покрывается юнит-тестом.
-- Полоса Fabric 1.21 компилируется против 1.21.8, а работает на 1.21 – 1.21.11. Прежде чем использовать там новый метод Minecraft, проверьте, что его сигнатура одинакова во всех 1.21.x. **Нестабильные** примеры: `Entity.level()`, `Entity.position()`, `GameProfile.getName()`.
+- У Fabric 1.21.x три полосы, разделённые там, где менялась отрисовка предметов: 1.21 – 1.21.1, 1.21.2 – 1.21.8 и 1.21.9 – 1.21.11. Каждая компилируется против последней версии своего диапазона (gradle.properties) и работает на всех. Прежде чем использовать в `shared/` новый метод Minecraft или Fabric API, проверьте, что его сигнатура одинакова во всех выпусках, которые покрывают полосы; `.github/workflows/compat.yml` проверяет jar каждой полосы на каждом выпуске её диапазона. **Нестабильные** примеры: `Entity.level()`, `Entity.position()`, `GameProfile.getName()`, `ServerLevel.getEntity(UUID)`, `SoundManager.play`.
 - Клиент и сервер обмениваются сырыми байтами на `despawnindicator:hello` (клиент → сервер) и `despawnindicator:clocks` (сервер → клиент). Все загрузчики и будущий плагин пишут ровно одни и те же байты; `ClockMessageTest` их фиксирует.
 - Сервер отправляет только игрокам, которые поздоровались, в конце тика сервера, поэтому пачка выпавших предметов уходит одним пакетом.
 
@@ -143,11 +143,11 @@ README состоит из двух файлов: `README.md` на англий�
 
 *In-game tests* (`.github/workflows/ingame.yml`) запускается на каждый pull request и перед каждым релизом:
 - **Серверы:** `.github/scripts/server-smoke.sh` запускает серверы Fabric, Forge и NeoForge с модом, выполняет `/despawnindicator` из консоли и падает, если ответа нет, если вместо текста ключи или если мод бросил исключение. Локально: `bash .github/scripts/server-smoke.sh fabric 1.21.1 build/libs/despawn-indicator-fabric-*+mc1.21-26.x.jar`.
-- **Клиент:** `./gradlew :fabric-1.21:runClientGameTest` (или `:fabric-26`) создаёт мир, бросает алмаз, который вот-вот исчезнет, изумруд, который не исчезает никогда, и золотой слиток, проверяет полученное клиентом время, выполняет `/despawnindicator` и сохраняет скриншоты в `build/run/clientGameTest/screenshots/`. В CI он идёт под `xvfb-run` с программными OpenGL и Vulkan из Mesa; клиент 1.21 работает на Java 21.
+- **Клиент:** `./gradlew :fabric-1.21.2:runClientGameTest` (или `:fabric-1.21.9`, `:fabric-26`) создаёт мир, бросает алмаз, который вот-вот исчезнет, изумруд, который не исчезает никогда, и золотой слиток, проверяет полученное клиентом время, выполняет `/despawnindicator` и сохраняет скриншоты в `build/run/clientGameTest/screenshots/`. В CI он идёт под `xvfb-run` с программными OpenGL и Vulkan из Mesa; клиенты 1.21.x работают на Java 21.
 - Логи и скриншоты прикладываются к каждому запуску как артефакты.
 - **Сбои сети:** загрузка, сорвавшаяся по дороге (таймаут, разрыв соединения, HTTP 429 / 5xx), повторяется один раз и оставляет предупреждение: сборка и клиент до запуска игры (`.github/scripts/net-retry.sh`, второй раз — Maven Central через зеркало Google), установщик сервера и его первый запуск. Упавший тест, ошибка компиляции и отсутствующий файл (404) сразу дают ошибку.
 
-*Build & Verify* ещё компилирует полосы Forge и NeoForge против самого старого заявленного загрузчика, а *Minecraft 26.x compatibility* проверяет, что сборка 26.x линкуется с каждым выпуском 26.x (`LinkCheck.java`).
+*Build & Verify* ещё компилирует полосы Forge и NeoForge против самого старого заявленного загрузчика, а *Fabric compatibility* проверяет, что jar каждой полосы Fabric линкуется с каждым выпуском её диапазона (`LinkCheck.java`).
 
 ### Релизы
 

@@ -11,7 +11,7 @@ public final class ClientSettings {
     public enum Style {
         /** Blinks, faster towards the end. */
         BLINK,
-        /** Fades in and out; items blink for now. */
+        /** Items shrink and grow back, the death loot timer fades in and out. */
         FADE,
         /** Never blinks: items get their time label, the timer only turns red. */
         LABEL
@@ -42,7 +42,8 @@ public final class ClientSettings {
             + "# How many seconds before it despawns an item starts to warn (" + MIN_WARN + " - " + MAX_WARN + ").\n"
             + "warn_seconds=20\n"
             + "\n"
-            + "# How it warns: blink, fade (blinks for now) or label (no blinking: the item shows its time).\n"
+            + "# How it warns: blink, fade (the item shrinks and grows back, the death loot timer fades in and out)\n"
+            + "# or label (no blinking: the item shows its time).\n"
             + "style=blink\n"
             + "\n"
             + "# When items show their time: look_sneak (the item you look at, and all around you while\n"

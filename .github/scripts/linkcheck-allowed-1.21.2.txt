@@ -1,0 +1,12 @@
+# Differences between Minecraft 1.21.8 (the reference) and older 1.21.2 - 1.21.7 that were reviewed and are safe.
+# One key per line as LinkCheck prints it after "DIFF".
+
+# The HUD element registry came with Fabric API for 1.21.6. LootHudHook only touches the class that uses it
+# when the registry is there, and draws through the older HUD callback otherwise.
+type net/fabricmc/fabric/api/client/rendering/v1/hud/HudElement
+type net/fabricmc/fabric/api/client/rendering/v1/hud/HudElementRegistry
+method net/fabricmc/fabric/api/client/rendering/v1/hud/HudElementRegistry.addLast(Lnet/minecraft/class_2960;Lnet/fabricmc/fabric/api/client/rendering/v1/hud/HudElement;)V
+
+# 1.21.4 put a parent class above the item's render state. FadeState extends the render state itself and uses
+# nothing of that parent, so it works with or without it.
+ancestor of com/kasper/despawnindicator/client/BlinkingItemRenderer$FadeState: net/minecraft/class_10428

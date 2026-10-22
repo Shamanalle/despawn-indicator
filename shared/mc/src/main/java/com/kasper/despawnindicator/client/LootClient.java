@@ -111,8 +111,9 @@ final class LootClient {
         }
         LootHud.Level now = LootHud.level(r.ticksLeft);
         if (heard != null && now.ordinal() > heard.ordinal() && settings.sound && !r.frozen) {
-            mc.getSoundManager().play(SimpleSoundInstance.forUI(
-                    now == LootHud.Level.URGENT ? SoundEvents.NOTE_BLOCK_BELL : SoundEvents.NOTE_BLOCK_PLING, 1.0F));
+            // playDelayed: play() returns a result since 1.21.6, so its signature differs within 1.21.x
+            mc.getSoundManager().playDelayed(SimpleSoundInstance.forUI(
+                    now == LootHud.Level.URGENT ? SoundEvents.NOTE_BLOCK_BELL : SoundEvents.NOTE_BLOCK_PLING, 1.0F), 0);
         }
         heard = now;
     }

@@ -22,6 +22,7 @@ class TextsTest {
         double warn = 20;
         assertTrue(Blink.shown(30, warn));
         assertEquals(1, Blink.alpha(30, warn));
+        assertEquals(1, Blink.scale(30, warn));
         assertEquals(0, Blink.phase(20, warn));
         // Once a second at the start, four times at the end: (1 + 4) / 2 * 20 = 50 blinks in all
         assertEquals(50, Blink.phase(0, warn), 1e-9);
@@ -35,7 +36,12 @@ class TextsTest {
             }
             double a = Blink.alpha(i / 100.0, warn);
             assertTrue(a >= 0.25 - 1e-9 && a <= 1 + 1e-9);
+            double scale = Blink.scale(i / 100.0, warn);
+            assertTrue(scale >= 0.3 - 1e-9 && scale <= 1 + 1e-9);
         }
+        // Full size when a blink starts, smallest halfway through it
+        assertEquals(1, Blink.scale(0, warn), 1e-9);
+        assertEquals(0.3, Blink.scale(-0.125, warn), 1e-9);
         assertTrue(hidden > 600 && hidden < 1000, "hidden about 40% of the time: " + hidden);
     }
 

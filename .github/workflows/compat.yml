@@ -1,0 +1,160 @@
+name: Fabric compatibility
+
+# One Fabric jar per band of Minecraft versions, each built against one version of its band and run on all
+# of them. This checks each band's jar on every release of its range, not only the one it is built against:
+# 1. the jar built for gradle.properties' <props>_minecraft links against that version and its latest
+#    Fabric API: every class, method, field, override and abstract method it uses resolves the same
+#    way (LinkCheck.java), apart from the reviewed differences in linkcheck-allowed-<band>.txt;
+# and, for information, whether the sources also compile against that version.
+# The Minecraft versions come from Mojang's version list, the Fabric API versions from Fabric's maven.
+
+on:
+  pull_request:
+    paths:
+      - 'versions/fabric/**'
+      - 'shared/mc/**'
+      - 'shared/fabric/**'
+      - 'common/src/main/**'
+      - 'gradle/fabric-band.gradle'
+      - 'gradle.properties'
+      - '.github/scripts/LinkCheck.java'
+      - '.github/scripts/linkcheck-allowed-*.txt'
+      - '.github/scripts/linkcheck-selftest.sh'
+      - '.github/workflows/compat.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  versions:
+    name: List the releases of each band
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.list.outputs.matrix }}
+    steps:
+      - name: Minecraft releases and their Fabric API
+        id: list
+        run: |
+          # module, its prefix in gradle.properties, its jar's suffix, the first and the last version (none: open)
+          bands='fabric-1.21 mc1210 mc1.21-1.21.1 1.21 1.21.1
+          fabric-1.21.2 mc1212 mc1.21.2-1.21.8 1.21.2 1.21.8
+          fabric-1.21.9 mc1219 mc1.21.9-1.21.11 1.21.9 1.21.11
+          fabric-26 mc26 mc26.x 26 -'
+          releases=$(curl -fsSL https://piston-meta.mojang.com/mc/game/version_manifest_v2.json \
+            | jq -r '.versions[] | select(.type == "release") | .id' | sort -V)
+          meta=$(curl -fsSL https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml)
+          # a <= b in version order
+          le() { [ "$(printf '%s\n%s\n' "$1" "$2" | sort -V | head -1)" = "$1" ]; }
+          entries=()
+          while read -r module props target first last; do
+            found=0
+            for mc in ${releases}; do
+              le "${first}" "${mc}" || continue
+              if [ "${last}" != "-" ]; then
+                le "${mc}" "${last}" || continue
+              fi
+              api=$(grep -oP "<version>\K[^<]*\+${mc//./\\.}(?=</version>)" <<< "${meta}" | sort -V | tail -1 || true)
+              if [ -z "${api}" ]; then
+                echo "::warning::No Fabric API for Minecraft ${mc}; skipped"
+                continue
+              fi
+              echo "${module}: Minecraft ${mc}, Fabric API ${api}"
+              found=1
+              entries+=("$(jq -cn --arg module "${module}" --arg props "${props}" --arg target "${target}" \
+                --arg mc "${mc}" --arg api "${api}" '{module: $module, props: $props, target: $target, mc: $mc, api: $api}')")
+            done
+            if [ "${found}" -eq 0 ]; then
+              echo "::error::No release of ${module} with a Fabric API found"
+              exit 1
+            fi
+          done <<< "${bands}"
+          echo "matrix=$(printf '%s\n' "${entries[@]}" | jq -cs '{include: .}')" >> "$GITHUB_OUTPUT"
+
+  check:
+    name: ${{ matrix.module }} on ${{ matrix.mc }}
+    needs: versions
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.versions.outputs.matrix) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x gradlew
+
+      - name: LinkCheck self-test
+        run: bash .github/scripts/linkcheck-selftest.sh
+
+      - name: Build the jar for the reference version
+        run: |
+          ./gradlew :${{ matrix.module }}:assemble :${{ matrix.module }}:writeCompileClasspath --no-daemon
+          dir="versions/fabric/${MODULE#fabric-}"
+          version=$(grep '^mod_version=' gradle.properties | cut -d= -f2)
+          cp "${dir}/build/libs/despawn-indicator-fabric-${version}+${{ matrix.target }}.jar" "${RUNNER_TEMP}/mod.jar"
+          cp "${dir}/build/compile-classpath.txt" "${RUNNER_TEMP}/reference-classpath.txt"
+        env:
+          MODULE: ${{ matrix.module }}
+
+      - name: Classpath of Minecraft ${{ matrix.mc }}
+        run: |
+          ./gradlew :${{ matrix.module }}:writeCompileClasspath --no-daemon \
+            -P${{ matrix.props }}_minecraft=${{ matrix.mc }} -P${{ matrix.props }}_fabric_api=${{ matrix.api }}
+          cp "versions/fabric/${MODULE#fabric-}/build/compile-classpath.txt" "${RUNNER_TEMP}/target-classpath.txt"
+        env:
+          MODULE: ${{ matrix.module }}
+
+      # For information only: what ships is the jar built for the reference version, and the two
+      # checks after this one decide whether it runs here. Compiling against older Fabric API
+      # builds can stop on classes of their injected interfaces (EntityLoadData on 26.1 - 26.1.1),
+      # which says nothing about the shipped jar.
+      - name: Compile the sources against Minecraft ${{ matrix.mc }} (information)
+        id: compile
+        continue-on-error: true
+        run: |
+          ./gradlew :${{ matrix.module }}:compileJava --no-daemon \
+            -P${{ matrix.props }}_minecraft=${{ matrix.mc }} -P${{ matrix.props }}_fabric_api=${{ matrix.api }}
+
+      - name: Check the reference jar links against Minecraft ${{ matrix.mc }}
+        id: link
+        continue-on-error: true
+        env:
+          MODULE: ${{ matrix.module }}
+        run: |
+          set -o pipefail
+          allowed=".github/scripts/linkcheck-allowed-${MODULE#fabric-}.txt"
+          [ -f "${allowed}" ] || allowed=""
+          java .github/scripts/LinkCheck.java "${RUNNER_TEMP}/mod.jar" \
+            "${RUNNER_TEMP}/reference-classpath.txt" "${RUNNER_TEMP}/target-classpath.txt" \
+            ${allowed} | tee "${RUNNER_TEMP}/link.txt"
+
+      - name: Result
+        env:
+          MODULE: ${{ matrix.module }}
+          MC: ${{ matrix.mc }}
+          API: ${{ matrix.api }}
+          COMPILE: ${{ steps.compile.outcome }}
+          LINK: ${{ steps.link.outcome }}
+        run: |
+          {
+            echo "### ${MODULE} on Minecraft ${MC} (Fabric API ${API})"
+            echo "- Sources compile (information only): **${COMPILE}**"
+            echo "- Reference jar links: **${LINK}**"
+            echo
+            echo '```'
+            tail -200 "${RUNNER_TEMP}/link.txt" 2>/dev/null || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          [ "${LINK}" = "success" ]

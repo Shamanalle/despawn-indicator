@@ -1,0 +1,8 @@
+plugins {
+    id 'fabric-loom' version '1.18.2'
+    id 'java'
+}
+
+// Minecraft 1.21.9 - 1.21.11, compiled against 1.21.11: items are submitted from a render state (submit).
+ext.band = [target: 'mc1.21.9-1.21.11', props: 'mc1219', gametest: true]
+apply from: "${rootDir}/gradle/fabric-band.gradle"

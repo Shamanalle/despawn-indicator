@@ -1,9 +1,13 @@
 package com.kasper.despawnindicator.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemEntityRenderer;
+import net.minecraft.client.renderer.entity.state.ItemEntityRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
@@ -15,8 +19,9 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 
 /**
- * The vanilla item renderer, except that an item about to despawn is skipped on the frames it blinks out
- * ({@link ItemLook}). Fabric, Minecraft 26.x.
+ * The vanilla item renderer, except that an item about to despawn is skipped on the frames it blinks out, or
+ * drawn smaller while it fades ({@link ItemLook}). Fabric, Minecraft 26.x. The item is handed to the frame
+ * from a render state taken from it first, so the size goes into that state.
  * <p>
  * One jar runs on all of 26.x, compiled against 26.3. Two things it needs changed within that range:
  * the item entity type moved from {@code EntityType.ITEM} to {@code EntityTypes.ITEM} in 26.2, so it is
@@ -59,6 +64,28 @@ public class BlinkingItemRenderer extends ItemEntityRenderer {
         } catch (Throwable t) {
             throw new IllegalStateException(t);
         }
+    }
+
+    @Override
+    public ItemEntityRenderState createRenderState() {
+        return new FadeState();
+    }
+
+    @Override
+    public void extractRenderState(ItemEntity item, ItemEntityRenderState state, float partialTick) {
+        super.extractRenderState(item, state, partialTick);
+        ((FadeState) state).scale = ItemLook.scale(item, partialTick);
+    }
+
+    @Override
+    public void submit(ItemEntityRenderState state, PoseStack pose, SubmitNodeCollector nodes,
+                       CameraRenderState camera) {
+        ItemLook.drawScaled(pose, ((FadeState) state).scale, () -> super.submit(state, pose, nodes, camera));
+    }
+
+    /** The vanilla state and the size to draw the item at. */
+    public static class FadeState extends ItemEntityRenderState {
+        public float scale = 1;
     }
 
     private static MethodHandle findOld() {
