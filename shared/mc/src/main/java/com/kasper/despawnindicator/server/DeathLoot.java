@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.phys.AABB;
 
@@ -168,7 +167,7 @@ public final class DeathLoot {
         ServerLevel level = Compat.level(player);
         List<Stack> stacks = new ArrayList<>();
         for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(DROP_RADIUS))) {
-            if (item.isRemoved() || item.tickCount > FRESH_TICKS) {
+            if (Compat.removed(item) || item.tickCount > FRESH_TICKS) {
                 continue;
             }
             UUID owner = Compat.ownerId(item);
@@ -185,8 +184,8 @@ public final class DeathLoot {
     private static void check(Loot loot) {
         for (Iterator<Stack> i = loot.stacks.iterator(); i.hasNext(); ) {
             Stack s = i.next();
-            if (s.entity != null && s.entity.isRemoved()) {
-                if (s.entity.getRemovalReason() != Entity.RemovalReason.UNLOADED_TO_CHUNK) {
+            if (s.entity != null && Compat.removed(s.entity)) {
+                if (!Compat.unloaded(s.entity)) {
                     // Picked up, despawned, merged, burned or through a portal
                     i.remove();
                     continue;
@@ -194,7 +193,7 @@ public final class DeathLoot {
                 s.entity = null;
             }
             if (s.entity == null) {
-                if (!loot.level.areEntitiesLoaded(chunk(s.pos))) {
+                if (!Compat.entitiesLoaded(loot.level, chunk(s.pos))) {
                     s.frozen = true;
                     continue;
                 }
@@ -203,7 +202,7 @@ public final class DeathLoot {
                 BlockPos p = s.pos;
                 List<ItemEntity> found = loot.level.getEntitiesOfClass(ItemEntity.class,
                         new AABB(p.getX() - 2, p.getY() - 2, p.getZ() - 2, p.getX() + 3, p.getY() + 3, p.getZ() + 3),
-                        e -> e.getUUID().equals(s.id) && !e.isRemoved());
+                        e -> e.getUUID().equals(s.id) && !Compat.removed(e));
                 if (found.isEmpty()) {
                     if (++s.misses >= MISSES) {
                         i.remove();

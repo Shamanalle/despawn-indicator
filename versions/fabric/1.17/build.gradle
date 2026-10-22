@@ -3,9 +3,9 @@ plugins {
     id 'java'
 }
 
-// Minecraft 1.17.1 (Java 16, so the common classes come from ':common-j8'). The channels, the item renderer and
-// the HUD are those of 1.17.1 - 1.19.4 (shared/fabric-1.17), the texts and sounds those of 1.17.1 - 1.18.2
-// (shared/mc-1.17), the command uses the v1 command API. Fabric API for 1.17.1 has no client gametest, so CI
+// Minecraft 1.17.1 (Java 16, so the common classes come from ':common-j8'). The channels and the HUD are those of
+// 1.16.5 - 1.19.4 (shared/fabric-1.16), the item renderer that of 1.17.1 - 1.19.4 (shared/fabric-1.17), the texts
+// and sounds those of 1.17.1 - 1.18.2 (shared/mc-1.17), the command uses the v1 command API. Fabric API for 1.17.1 has no client gametest, so CI
 // starts this band on a server only.
-ext.band = [target: 'mc1.17.1', props: 'mc1171', java: 16, gametest: false, ownCompat: true, commandV1: true, shared: ['fabric-1.17', 'mc-1.17']]
+ext.band = [target: 'mc1.17.1', props: 'mc1171', java: 16, gametest: false, ownCompat: true, commandV1: true, shared: ['fabric-1.16', 'fabric-1.17', 'mc-1.17']]
 apply from: "${rootDir}/gradle/fabric-band.gradle"

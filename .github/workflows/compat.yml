@@ -14,7 +14,9 @@ on:
       - 'versions/fabric/**'
       - 'shared/mc/**'
       - 'shared/fabric/**'
+      - 'shared/fabric-1.16/**'
       - 'shared/fabric-1.17/**'
+      - 'shared/fabric-slf4j/**'
       - 'shared/fabric-command-v1/**'
       - 'shared/fabric-command-v2/**'
       - 'shared/mc-1.17/**'
@@ -43,7 +45,8 @@ jobs:
         id: list
         run: |
           # module, its prefix in gradle.properties, its jar's suffix, the first and the last version (none: open)
-          bands='fabric-1.17 mc1171 mc1.17.1 1.17.1 1.17.1
+          bands='fabric-1.16 mc1165 mc1.16.5 1.16.5 1.16.5
+          fabric-1.17 mc1171 mc1.17.1 1.17.1 1.17.1
           fabric-1.18 mc1182 mc1.18.2 1.18.2 1.18.2
           fabric-1.19 mc1190 mc1.19-1.19.3 1.19 1.19.3
           fabric-1.19.4 mc1194 mc1.19.4 1.19.4 1.19.4
@@ -68,7 +71,7 @@ jobs:
                 le "${mc}" "${last}" || continue
               fi
               api=$(grep -oP "<version>\K[^<]*\+${mc//./\\.}(?=</version>)" <<< "${meta}" | sort -V | tail -1 || true)
-              # Fabric API for 1.17.1 is published for 1.17 (0.46.1+1.17): fall back to the version without its last number
+              # Fabric API for 1.16.5 and 1.17.1 is published for 1.16 and 1.17 (0.42.0+1.16, 0.46.1+1.17): fall back to the version without its last number
               if [ -z "${api}" ] && [ "${mc}" != "${mc%.*.*}" ]; then
                 minor=${mc%.*}
                 api=$(grep -oP "<version>\K[^<]*\+${minor//./\\.}(?=</version>)" <<< "${meta}" | sort -V | tail -1 || true)

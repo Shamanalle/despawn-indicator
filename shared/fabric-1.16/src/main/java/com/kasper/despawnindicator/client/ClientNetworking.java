@@ -3,7 +3,7 @@ package com.kasper.despawnindicator.client;
 import com.kasper.despawnindicator.ModNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
-/** The client's end of the two channels ({@link ModNetworking}), Fabric, Minecraft 1.17.1 - 1.19.4. */
+/** The client's end of the two channels ({@link ModNetworking}), Fabric, Minecraft 1.16.5 - 1.19.4. */
 public final class ClientNetworking {
 
     private ClientNetworking() {
