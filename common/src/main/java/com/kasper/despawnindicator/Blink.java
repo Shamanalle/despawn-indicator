@@ -14,8 +14,10 @@ public final class Blink {
     public static final double FAST = 4.0;
     /** The part of each blink the item is shown. */
     private static final double SHOWN = 0.6;
-    /** How faint a fading item gets at its faintest. */
+    /** How faint the fading death loot timer gets at its faintest. */
     private static final double MIN_ALPHA = 0.25;
+    /** How small a fading item gets at its smallest. */
+    private static final double MIN_SCALE = 0.3;
 
     private Blink() {
     }
@@ -42,12 +44,24 @@ public final class Blink {
         return p - Math.floor(p) < SHOWN;
     }
 
-    /** How opaque the item is drawn now, 0.25 - 1 (the fading style). */
+    /** How opaque the death loot timer is drawn now, 0.25 - 1 (the fading style). */
     public static double alpha(double secondsLeft, double warnSeconds) {
+        return MIN_ALPHA + (1 - MIN_ALPHA) * wave(secondsLeft, warnSeconds);
+    }
+
+    /**
+     * How large an item is drawn now, 0.3 - 1 (the fading style): it shrinks and grows back at the blink rate.
+     * Not transparency, which shader packs often draw as fully opaque.
+     */
+    public static double scale(double secondsLeft, double warnSeconds) {
+        return MIN_SCALE + (1 - MIN_SCALE) * wave(secondsLeft, warnSeconds);
+    }
+
+    /** 1 at the start of each blink, 0 halfway through it; 1 before the warning. */
+    private static double wave(double secondsLeft, double warnSeconds) {
         if (secondsLeft >= warnSeconds) {
             return 1;
         }
-        double wave = 0.5 + 0.5 * Math.cos(2 * Math.PI * phase(secondsLeft, warnSeconds));
-        return MIN_ALPHA + (1 - MIN_ALPHA) * wave;
+        return 0.5 + 0.5 * Math.cos(2 * Math.PI * phase(secondsLeft, warnSeconds));
     }
 }

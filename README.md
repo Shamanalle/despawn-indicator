@@ -20,7 +20,7 @@
 
 Items on the ground disappear after five minutes, and Minecraft never tells you how long one has left. Despawn Indicator does: dropped items start to blink before they despawn, faster and faster toward the end, and show the time left (`0:42`) when you look at them. After you die, a timer on the screen counts down to your lost items and points the way back.
 
-> **Early version.** Blinking, the time label, the death loot timer, exact times with the server mod or the Paper / Folia / Spigot plugin and `/despawnindicator` are in. Coming later: a fade that works with shaders and more Minecraft versions for the mod. See the [plan](docs/PLAN.md).
+> **Early version.** Blinking, the time label, the death loot timer, exact times with the server mod or the Paper / Folia / Spigot plugin and `/despawnindicator` and a fading style that works with shaders are in. Coming later: more Minecraft versions for the mod. See the [plan](docs/PLAN.md).
 
 ## Contents
 
@@ -50,6 +50,7 @@ That is enough for singleplayer and for any server. On a server without the mod 
 ## What it does
 
 - **Blinking:** an item blinks during its last 20 seconds, faster toward the end. It is drawn by skipping frames rather than by transparency, so it looks the same with shaders.
+- **Fading** (`style=fade`): instead of blinking, an item shrinks and grows back during its last 20 seconds, faster toward the end, but never vanishes. It is only drawn smaller, so this too works with shaders. The death loot timer fades in and out.
 - **Time label:** `0:42` above an item when you look at it (up to 24 blocks away), and above every item within 8 blocks while you sneak (the nearest 32). White, yellow in the last minute, red in the last 20 seconds. A labelled item stops blinking so the label can be read. Items that never despawn and items that already have a name show nothing. The label is the item's name tag, set on your client only.
 - **Exact or estimated:** with the mod on the server (or in singleplayer) every time is exact. Without it the client starts counting when it first sees an item and marks the time `≈`: an item that was lying there before you came looks younger than it is, so it may vanish while the label still shows time left.
 - **Death loot timer:** after you die, the top left corner shows how long until the first of your dropped items despawns (`Death loot despawns in 4:12`), with an arrow, the distance, the coordinates and the world. It turns yellow in the last minute and blinks red in the last 15 seconds, and goes away once you pick the items up or they despawn. With the mod on the server it is exact; it tracks the items that appeared where you died, and if they are scattered it counts down to the one that despawns first. While nobody is near them their clock stops, and the timer says `(paused)`. Hidden with the rest of the HUD (F1).
@@ -79,7 +80,7 @@ Both files are plain text, are created on first start with comments, and are rea
 |---|---|---|
 | `death_hud` | `true` | The death loot timer on or off. |
 | `warn_seconds` | `20` | How many seconds before despawning an item starts to blink and its label turns red (5 – 120). |
-| `style` | `blink` | `blink`; `fade` (blinks for now, a fade that works with shaders is planned); `label`: items never blink and show their time in the last seconds instead, the death loot timer only turns red. |
+| `style` | `blink` | `blink`; `fade`: items shrink and grow back instead of blinking, the death loot timer fades in and out; `label`: items never blink and show their time in the last seconds instead, the death loot timer only turns red. |
 | `labels` | `look_sneak` | When items show their time: `look_sneak` (the item you look at, and all around while sneaking), `look`, `sneak` or `never`. |
 | `sound` | `false` | A chime when the death loot timer reaches one minute and a bell at 15 seconds. |
 
@@ -101,11 +102,11 @@ Each file holds a build for every Minecraft version in its range and picks the r
 
 ## Compatibility
 
-- **Shaders (Iris, Oculus), Sodium, Embeddium:** blinking skips frames instead of changing transparency, so shader packs draw it correctly.
+- **Shaders (Iris, Oculus), Sodium, Embeddium:** blinking skips frames and fading draws the item smaller, neither changes transparency, so shader packs draw both correctly.
 - **Grave mods:** when a grave mod stores your items in a grave block, there are no items on the ground and nothing to count down: the death loot timer does not appear.
 - **Item clearing mods** (ClearLag and the like) remove items on their own schedule, which the countdown cannot know.
 - **The plugin** is tested on Paper 1.16.5, 1.17.1, 1.20.4, 1.21.11 and 26.1.2 and on Folia 1.21.11; Spigot uses the same API but is not tested on every release. It follows Paper's per-item despawn rates (`alt-item-despawn-rate`) and Spigot's `item-despawn-rate`. On Folia it sees each item from that item's region thread. After `/reload` players who were online get item times but no death loot timer until they rejoin.
-- **Mods that draw dropped items their own way** (replacing Minecraft's item renderer) may cancel the blinking; the time label still works.
+- **Mods that draw dropped items their own way** (replacing Minecraft's item renderer) may cancel the blinking and fading; the time label still works.
 
 ## Commands
 

@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -196,14 +197,19 @@ public final class DeathLoot {
                     s.frozen = true;
                     continue;
                 }
-                Entity found = loot.level.getEntity(s.id);
-                if (!(found instanceof ItemEntity) || found.isRemoved()) {
+                // Looked for where it was last seen, not by its UUID alone: the level's lookup by UUID changed
+                // its signature within 1.21.x, and the jar of a band runs on all of them
+                BlockPos p = s.pos;
+                List<ItemEntity> found = loot.level.getEntitiesOfClass(ItemEntity.class,
+                        new AABB(p.getX() - 2, p.getY() - 2, p.getZ() - 2, p.getX() + 3, p.getY() + 3, p.getZ() + 3),
+                        e -> e.getUUID().equals(s.id) && !e.isRemoved());
+                if (found.isEmpty()) {
                     if (++s.misses >= MISSES) {
                         i.remove();
                     }
                     continue;
                 }
-                s.entity = (ItemEntity) found;
+                s.entity = found.get(0);
                 s.misses = 0;
             }
             int age = s.entity.getAge();

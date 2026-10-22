@@ -156,12 +156,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { module: fabric-1.21, dir: versions/fabric/1.21, mc: '1.21.8' }
+          - { module: fabric-1.21.2, dir: versions/fabric/1.21.2, mc: '1.21.8' }
+          - { module: fabric-1.21.9, dir: versions/fabric/1.21.9, mc: '1.21.11' }
           - { module: fabric-26, dir: versions/fabric/26, mc: '26.3' }
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      # Gradle runs on 25; the 1.21 test client runs on 21 (see versions/fabric/1.21/build.gradle)
+      # Gradle runs on 25; the 1.21.x test clients run on 21 (see gradle/fabric-band.gradle)
       - name: Set up JDK 21 and 25
         uses: actions/setup-java@v4
         with:
@@ -183,10 +184,11 @@ jobs:
         run: |
           chmod +x gradlew
           xvfb-run -a -s "-screen 0 1280x960x24 +extension GLX +render" sh -c 'glxinfo -B | head -12 || true'
-          # Tried again only when it failed on a download before the game started
+          # Tried again only when it failed on a download before the game started. --stacktrace prints the
+          # cause under Loom's bare "Failed to download", so net-retry.sh can tell a timeout from a 404
           bash .github/scripts/net-retry.sh --started '^> Task :${{ matrix.module }}:runClientGameTest' -- \
             xvfb-run -a -s "-screen 0 1280x960x24 +extension GLX +render" ./gradlew :${{ matrix.module }}:runClientGameTest \
-            --no-daemon --console=plain -Porg.gradle.java.installations.fromEnv=JAVA_HOME_21_X64,JAVA_HOME_25_X64
+            --no-daemon --console=plain --stacktrace -Porg.gradle.java.installations.fromEnv=JAVA_HOME_21_X64,JAVA_HOME_25_X64
       - name: Upload screenshots and logs
         if: always()
         uses: actions/upload-artifact@v4
