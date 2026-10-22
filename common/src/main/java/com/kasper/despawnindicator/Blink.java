@@ -20,13 +20,17 @@ public final class Blink {
     private Blink() {
     }
 
-    /** Blinks since the warning began; 0 before it. */
+    /**
+     * Blinks since the warning began; 0 before it. Past the end (an estimate that ran out while the item is
+     * still there) it goes on at the fast rate, so the item keeps blinking rather than staying hidden.
+     */
     public static double phase(double secondsLeft, double warnSeconds) {
         if (warnSeconds <= 0 || secondsLeft >= warnSeconds) {
             return 0;
         }
         double u = warnSeconds - Math.max(0, secondsLeft);
-        return SLOW * u + (FAST - SLOW) * u * u / (2 * warnSeconds);
+        double overtime = Math.max(0, -secondsLeft);
+        return SLOW * u + (FAST - SLOW) * u * u / (2 * warnSeconds) + FAST * overtime;
     }
 
     /** Whether the item is drawn now (the blinking style). */

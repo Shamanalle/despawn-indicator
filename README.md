@@ -19,7 +19,7 @@
 
 Items on the ground disappear after five minutes, and Minecraft never tells you how long one has left. Despawn Indicator does: dropped items start to blink before they despawn, faster and faster toward the end, and show the time left (`0:42`) when you look at them.
 
-> **Work in progress.** The first release, 0.1.0, is not out yet. Already working: the server sends every item's exact despawn time to players with the mod, and `/despawnindicator` shows the mod's status. Coming in 0.1.0: blinking and the time label. Later: a HUD for the items you dropped on death, the Paper / Folia / Spigot plugin and more Minecraft versions. See the [plan](docs/PLAN.md).
+> **Early version.** 0.1.0 has blinking, the time label, exact times with the server mod and `/despawnindicator`. Coming later: a HUD for the items you dropped on death, the Paper / Folia / Spigot plugin and more Minecraft versions. See the [plan](docs/PLAN.md).
 
 ## Contents
 
@@ -48,7 +48,7 @@ That is enough for singleplayer and for any server. On a server without the mod 
 ## What it does
 
 - **Blinking:** an item blinks during its last 20 seconds, faster toward the end. It is drawn by skipping frames rather than by transparency, so it looks the same with shaders.
-- **Time label:** `0:42` above an item when you look at it or sneak near it. Items that never despawn show nothing.
+- **Time label:** `0:42` above an item when you look at it (up to 24 blocks away), and above every item within 8 blocks while you sneak (the nearest 32). White, yellow in the last minute, red in the last 20 seconds. A labelled item stops blinking so the label can be read. Items that never despawn and items that already have a name show nothing. The label is the item's name tag, set on your client only.
 - **Exact or estimated:** with the mod on the server (or in singleplayer) every time is exact. Without it the client starts counting when it first sees an item and marks the time `≈`: an item that was lying there before you came looks younger than it is, so it may vanish while the label still shows time left.
 - Server settings are respected: Forge and NeoForge item lifespans, items that never despawn, and (with the plugin) Paper's and Spigot's despawn rates.
 
@@ -77,6 +77,7 @@ Each file holds a build for every Minecraft version in its range and picks the r
 - **Shaders (Iris, Oculus), Sodium, Embeddium:** blinking skips frames instead of changing transparency, so shader packs draw it correctly.
 - **Grave mods:** when a grave mod stores your items in a grave block, there are no items on the ground and nothing to count down.
 - **Item clearing mods** (ClearLag and the like) remove items on their own schedule, which the countdown cannot know.
+- **Mods that draw dropped items their own way** (replacing Minecraft's item renderer) may cancel the blinking; the time label still works.
 
 ## Commands
 

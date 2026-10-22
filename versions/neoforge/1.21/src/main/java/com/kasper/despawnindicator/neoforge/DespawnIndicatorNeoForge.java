@@ -53,7 +53,7 @@ public final class DespawnIndicatorNeoForge {
         NeoForge.EVENT_BUS.addListener((ServerStoppedEvent e) -> ServerClocks.stopped());
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> StatusCommand.register(e.getDispatcher()));
         if (dist.isClient()) {
-            NeoClient.init();
+            NeoClient.init(modBus);
         }
         ModLog.info(DespawnIndicator.NAME + " " + BuildInfo.version() + " loaded");
     }

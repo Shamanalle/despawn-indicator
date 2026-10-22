@@ -40,6 +40,19 @@ class TextsTest {
     }
 
     @Test
+    void keepsBlinkingWhenTimeRunsOut() {
+        double warn = 20;
+        assertEquals(54, Blink.phase(-1, warn), 1e-9);
+        int shown = 0;
+        for (int i = 0; i < 100; i++) {
+            if (Blink.shown(-i / 20.0, warn)) {
+                shown++;
+            }
+        }
+        assertTrue(shown > 40 && shown < 80, "still blinking: " + shown);
+    }
+
+    @Test
     void serverLanguage() {
         assertEquals("ru_ru", ServerText.language("ru"));
         assertEquals("ru_ru", ServerText.language("ru-RU"));

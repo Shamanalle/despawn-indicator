@@ -30,9 +30,16 @@ public final class ServerClocks {
      * their client yet; they get one when the player starts to see them.
      */
     private static final double HELLO_RADIUS = 128;
+    /**
+     * Every few seconds the items close to a player with the mod get their clock again: the client counts
+     * down on its own ticks, which drift from the server's when either lags.
+     */
+    private static final int RESYNC_EVERY = 100;
+    private static final double RESYNC_RADIUS = 32;
 
     /** Hellos that arrived since the last tick, answered at its end, on the server thread. */
     private static final Set<UUID> NEW = ConcurrentHashMap.newKeySet();
+    private static int ticks;
 
     private ServerClocks() {
     }
@@ -71,7 +78,16 @@ public final class ServerClocks {
                 NEW.remove(id);
                 ServerPlayer player = server.getPlayerList().getPlayer(id);
                 if (player != null) {
-                    queueAround(server, player);
+                    queueAround(server, player, HELLO_RADIUS);
+                }
+            }
+        }
+        if (++ticks % RESYNC_EVERY == 0 && SENDER.playersWithMod() > 0) {
+            for (ServerLevel level : server.getAllLevels()) {
+                for (ServerPlayer player : level.players()) {
+                    if (SENDER.hasMod(player.getUUID())) {
+                        queue(level, player, RESYNC_RADIUS);
+                    }
                 }
             }
         }
@@ -97,13 +113,17 @@ public final class ServerClocks {
     }
 
     /** The items near a player who just said hello: their client already has them. */
-    private static void queueAround(MinecraftServer server, ServerPlayer player) {
+    private static void queueAround(MinecraftServer server, ServerPlayer player, double radius) {
         for (ServerLevel level : server.getAllLevels()) {
             if (level.players().contains(player)) {
-                for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(HELLO_RADIUS))) {
-                    SENDER.queue(player.getUUID(), item);
-                }
+                queue(level, player, radius);
             }
+        }
+    }
+
+    private static void queue(ServerLevel level, ServerPlayer player, double radius) {
+        for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(radius))) {
+            SENDER.queue(player.getUUID(), item);
         }
     }
 
