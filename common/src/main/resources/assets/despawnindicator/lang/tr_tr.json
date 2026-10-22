@@ -2,5 +2,12 @@
   "command.despawnindicator.status.title": "Despawn Indicator %s",
   "command.despawnindicator.status.players": "Modu olan oyuncular: çevrimiçi %2$s oyuncudan %1$s. Yerdeki eşyaların ne zaman kaybolacağını tam olarak görürler.",
   "command.despawnindicator.status.lifetime": "Atılan eşyalar burada %s sonra kaybolur.",
-  "modmenu.descriptionTranslation.despawnindicator": "Yerdeki eşyalar kaybolmadan önce yanıp söner ve kalan süreyi gösterir. Mod sunucuda da varsa süre kesindir."
+  "modmenu.descriptionTranslation.despawnindicator": "Yerdeki eşyalar kaybolmadan önce yanıp söner ve kalan süreyi gösterir. Mod sunucuda da varsa süre kesindir.",
+  "gui.despawnindicator.loot.title": "Ölüm ganimeti %s içinde kaybolacak",
+  "gui.despawnindicator.loot.paused": "duraklatıldı",
+  "gui.despawnindicator.loot.unlimited": "Ölüm ganimeti kaybolmayacak",
+  "gui.despawnindicator.loot.distance": "%s blok",
+  "gui.despawnindicator.dimension.overworld": "Üst Dünya",
+  "gui.despawnindicator.dimension.the_nether": "Nether",
+  "gui.despawnindicator.dimension.the_end": "End"
 }

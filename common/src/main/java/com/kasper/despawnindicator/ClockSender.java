@@ -37,6 +37,12 @@ public final class ClockSender<E> {
         return withMod.containsKey(player);
     }
 
+    /** The protocol {@code player}'s client speaks; 0 without the mod. */
+    public int protocol(UUID player) {
+        HelloMessage h = withMod.get(player);
+        return h == null ? 0 : h.protocol;
+    }
+
     public int playersWithMod() {
         return withMod.size();
     }

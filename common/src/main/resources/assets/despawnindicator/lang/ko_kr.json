@@ -2,5 +2,12 @@
   "command.despawnindicator.status.title": "Despawn Indicator %s",
   "command.despawnindicator.status.players": "모드가 있는 플레이어: 접속 중 %2$s명 중 %1$s명. 바닥의 아이템이 언제 사라지는지 정확히 봅니다.",
   "command.despawnindicator.status.lifetime": "버린 아이템은 여기서 %s 후에 사라집니다.",
-  "modmenu.descriptionTranslation.despawnindicator": "바닥의 아이템이 사라지기 전에 깜박이고 남은 시간을 보여 줍니다. 서버에도 모드가 있으면 시간이 정확합니다."
+  "modmenu.descriptionTranslation.despawnindicator": "바닥의 아이템이 사라지기 전에 깜박이고 남은 시간을 보여 줍니다. 서버에도 모드가 있으면 시간이 정확합니다.",
+  "gui.despawnindicator.loot.title": "사망 아이템이 %s 후 사라짐",
+  "gui.despawnindicator.loot.paused": "일시 정지됨",
+  "gui.despawnindicator.loot.unlimited": "사망 아이템이 사라지지 않음",
+  "gui.despawnindicator.loot.distance": "%s블록",
+  "gui.despawnindicator.dimension.overworld": "오버월드",
+  "gui.despawnindicator.dimension.the_nether": "네더",
+  "gui.despawnindicator.dimension.the_end": "엔드"
 }

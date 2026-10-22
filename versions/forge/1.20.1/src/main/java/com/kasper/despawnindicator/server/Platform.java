@@ -2,8 +2,11 @@ package com.kasper.despawnindicator.server;
 
 import com.kasper.despawnindicator.forge.ForgeNetworking;
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
+import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
+
+import java.nio.file.Path;
 
 /** What the shared server code needs from the loader (Forge, Minecraft 1.20.1). */
 public final class Platform {
@@ -23,5 +26,10 @@ public final class Platform {
 
     public static void send(ServerPlayer player, byte[] message) {
         player.connection.send(new ClientboundCustomPayloadPacket(ForgeNetworking.CLOCKS, ForgeNetworking.write(message)));
+    }
+
+    /** The game's config folder. */
+    public static Path configDir() {
+        return FMLPaths.CONFIGDIR.get();
     }
 }

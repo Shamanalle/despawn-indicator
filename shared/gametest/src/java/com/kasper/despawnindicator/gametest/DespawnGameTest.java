@@ -2,6 +2,7 @@ package com.kasper.despawnindicator.gametest;
 
 import com.kasper.despawnindicator.ClientClocks;
 import com.kasper.despawnindicator.DespawnIndicator;
+import com.kasper.despawnindicator.LootTracker;
 import com.kasper.despawnindicator.client.ClientTicker;
 import com.kasper.despawnindicator.client.ItemLook;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -9,6 +10,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -23,8 +25,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Drops items in front of the player in a real singleplayer world and checks the whole way from the server half
  * to the client: an old item gets its exact time left, an item that never despawns gets no timer, a fresh one
  * the full five minutes. The old diamond blinks; looking at an item and sneaking put time labels over them.
- * Then runs {@code /despawnindicator} as the player and checks the reply is real text. Screenshots are uploaded
- * by CI.
+ * Then runs {@code /despawnindicator} as the player and checks the reply is real text. Last the player dies away
+ * from their spawn point: after the respawn the death loot timer shows the server's exact time, and picking the
+ * items up takes it away. Screenshots are uploaded by CI.
  */
 public class DespawnGameTest implements FabricClientGameTest {
 
@@ -75,7 +78,53 @@ public class DespawnGameTest implements FabricClientGameTest {
             context.waitTicks(20);
             context.takeScreenshot("status-chat");
             checkStatus();
+
+            checkDeathLoot(context, world);
         }
+    }
+
+    /** Dies 30 blocks from the spawn point with a few stacks, respawns, then gets the stacks back. */
+    private static void checkDeathLoot(ClientGameTestContext context, TestSingleplayerContext world) {
+        world.getServer().runCommand("gamemode survival @a");
+        world.getServer().runCommand("execute as @a at @s run spawnpoint @s ~ ~ ~");
+        world.getServer().runCommand("give @a minecraft:cobblestone 5");
+        world.getServer().runCommand("give @a minecraft:oak_log 3");
+        world.getServer().runCommand("execute as @a at @s run tp @s ~30 ~ ~");
+        world.getServer().runCommand("kill @a");
+        context.waitForScreen(DeathScreen.class);
+        context.waitTicks(30);
+        context.takeScreenshot("death-screen");
+        context.clickScreenButton("deathScreen.respawn");
+        context.waitForScreen(null);
+        context.waitTicks(20);
+        context.takeScreenshot("death-loot-hud");
+        context.runOnClient(client -> {
+            LootTracker.Reading r = ClientTicker.LOOT.read();
+            String what = r == null ? "none" : r.items + " stacks, " + (r.estimate ? "estimate " : "")
+                    + (r.unlimited ? "unlimited" : r.ticksLeft + " ticks") + " at " + r.x + " " + r.y + " " + r.z;
+            System.out.println("[gametest] death loot: " + what);
+            if (r == null) {
+                throw new AssertionError("No death loot timer after the respawn");
+            }
+            if (r.estimate || r.unlimited || r.ticksLeft < 5800 || r.ticksLeft > DespawnIndicator.VANILLA_LIFETIME) {
+                throw new AssertionError("Wrong death loot timer: " + what);
+            }
+            double dx = r.x + 0.5 - client.player.getX();
+            double dz = r.z + 0.5 - client.player.getZ();
+            if (Math.sqrt(dx * dx + dz * dz) < 20) {
+                throw new AssertionError("The death loot timer does not point where the player died: " + what);
+            }
+        });
+
+        // The loot is the only thing 20 blocks away from the spawn point
+        world.getServer().runCommand("execute as @a at @s run tp @e[type=item,distance=20..] @s");
+        context.waitTicks(40);
+        context.takeScreenshot("death-loot-picked-up");
+        context.runOnClient(client -> {
+            if (ClientTicker.LOOT.read() != null) {
+                throw new AssertionError("The death loot timer stays after the items were picked up");
+            }
+        });
     }
 
     private static void checkClocks(Minecraft client) {

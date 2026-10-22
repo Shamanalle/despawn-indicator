@@ -2,5 +2,12 @@
   "command.despawnindicator.status.title": "Despawn Indicator %s",
   "command.despawnindicator.status.players": "安装了本模组的玩家：%s / %s 在线。他们能准确看到地上的物品何时消失。",
   "command.despawnindicator.status.lifetime": "掉落物在此服务器上 %s 后消失。",
-  "modmenu.descriptionTranslation.despawnindicator": "地上的物品在消失前会闪烁，并显示剩余时间。服务器也安装本模组时，时间是精确的。"
+  "modmenu.descriptionTranslation.despawnindicator": "地上的物品在消失前会闪烁，并显示剩余时间。服务器也安装本模组时，时间是精确的。",
+  "gui.despawnindicator.loot.title": "死亡掉落物将在 %s 后消失",
+  "gui.despawnindicator.loot.paused": "已暂停",
+  "gui.despawnindicator.loot.unlimited": "死亡掉落物不会消失",
+  "gui.despawnindicator.loot.distance": "%s 格",
+  "gui.despawnindicator.dimension.overworld": "主世界",
+  "gui.despawnindicator.dimension.the_nether": "下界",
+  "gui.despawnindicator.dimension.the_end": "末地"
 }

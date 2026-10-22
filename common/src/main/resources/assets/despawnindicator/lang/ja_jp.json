@@ -2,5 +2,12 @@
   "command.despawnindicator.status.title": "Despawn Indicator %s",
   "command.despawnindicator.status.players": "Modを入れているプレイヤー：オンライン %2$s 人中 %1$s 人。地面のアイテムが消える時刻を正確に見られます。",
   "command.despawnindicator.status.lifetime": "ここでは落としたアイテムは %s 後に消えます。",
-  "modmenu.descriptionTranslation.despawnindicator": "地面のアイテムが消える前に点滅し、残り時間を表示します。サーバーにもModがあれば時間は正確です。"
+  "modmenu.descriptionTranslation.despawnindicator": "地面のアイテムが消える前に点滅し、残り時間を表示します。サーバーにもModがあれば時間は正確です。",
+  "gui.despawnindicator.loot.title": "死亡時のアイテムが消えるまで %s",
+  "gui.despawnindicator.loot.paused": "一時停止中",
+  "gui.despawnindicator.loot.unlimited": "死亡時のアイテムは消えません",
+  "gui.despawnindicator.loot.distance": "%s ブロック",
+  "gui.despawnindicator.dimension.overworld": "オーバーワールド",
+  "gui.despawnindicator.dimension.the_nether": "ネザー",
+  "gui.despawnindicator.dimension.the_end": "ジ・エンド"
 }

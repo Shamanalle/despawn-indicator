@@ -2,5 +2,12 @@
   "command.despawnindicator.status.title": "Despawn Indicator %s",
   "command.despawnindicator.status.players": "Spieler mit der Mod: %s von %s online. Sie sehen genau, wann Gegenstände am Boden verschwinden.",
   "command.despawnindicator.status.lifetime": "Fallengelassene Gegenstände verschwinden hier nach %s.",
-  "modmenu.descriptionTranslation.despawnindicator": "Gegenstände am Boden blinken, bevor sie verschwinden, und zeigen die verbleibende Zeit. Ist die Mod auch auf dem Server, ist die Zeit genau."
+  "modmenu.descriptionTranslation.despawnindicator": "Gegenstände am Boden blinken, bevor sie verschwinden, und zeigen die verbleibende Zeit. Ist die Mod auch auf dem Server, ist die Zeit genau.",
+  "gui.despawnindicator.loot.title": "Todesbeute verschwindet in %s",
+  "gui.despawnindicator.loot.paused": "pausiert",
+  "gui.despawnindicator.loot.unlimited": "Todesbeute verschwindet nicht",
+  "gui.despawnindicator.loot.distance": "%s Blöcke",
+  "gui.despawnindicator.dimension.overworld": "Oberwelt",
+  "gui.despawnindicator.dimension.the_nether": "Nether",
+  "gui.despawnindicator.dimension.the_end": "Ende"
 }

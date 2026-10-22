@@ -2,9 +2,11 @@ package com.kasper.despawnindicator.server;
 
 import com.kasper.despawnindicator.ClockMessage;
 import com.kasper.despawnindicator.ClockSender;
+import com.kasper.despawnindicator.ConfigFile;
 import com.kasper.despawnindicator.HelloMessage;
 import com.kasper.despawnindicator.ItemClock;
 import com.kasper.despawnindicator.ModLog;
+import com.kasper.despawnindicator.ServerSettings;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,6 +42,7 @@ public final class ServerClocks {
     /** Hellos that arrived since the last tick, answered at its end, on the server thread. */
     private static final Set<UUID> NEW = ConcurrentHashMap.newKeySet();
     private static int ticks;
+    private static ConfigFile config;
 
     private ServerClocks() {
     }
@@ -52,6 +55,9 @@ public final class ServerClocks {
         }
         SENDER.hello(player.getUUID(), hello);
         NEW.add(player.getUUID());
+        if (hello.protocol >= HelloMessage.LOOT) {
+            DeathLoot.hello(player.getUUID());
+        }
     }
 
     /** {@code player}'s client was just sent {@code entity}. */
@@ -64,11 +70,21 @@ public final class ServerClocks {
     public static void left(ServerPlayer player) {
         SENDER.left(player.getUUID());
         NEW.remove(player.getUUID());
+        DeathLoot.left(player.getUUID());
     }
 
     public static void stopped() {
         SENDER.clear();
         NEW.clear();
+        DeathLoot.stopped();
+    }
+
+    /** The server owner's settings now (config/despawnindicator-server.properties). */
+    public static synchronized ServerSettings settings() {
+        if (config == null) {
+            config = new ConfigFile(Platform.configDir().resolve(ServerSettings.FILE), ServerSettings.DEFAULTS);
+        }
+        return ServerSettings.parse(config.get());
     }
 
     /** The end of a server tick: clocks for the items queued in it. */
@@ -91,16 +107,30 @@ public final class ServerClocks {
                 }
             }
         }
-        for (Map.Entry<UUID, List<ItemEntity>> e : SENDER.drain().entrySet()) {
+        DeathLoot.endTick(server);
+        Map<UUID, List<ItemEntity>> due = SENDER.drain();
+        if (due.isEmpty()) {
+            return;
+        }
+        boolean all = settings().clocks == ServerSettings.Clocks.ALL;
+        for (Map.Entry<UUID, List<ItemEntity>> e : due.entrySet()) {
             ServerPlayer player = server.getPlayerList().getPlayer(e.getKey());
             if (player == null) {
                 continue;
             }
             List<ItemClock> clocks = new ArrayList<>();
             for (ItemEntity item : e.getValue()) {
-                if (!item.isRemoved()) {
-                    clocks.add(clock(item));
+                if (item.isRemoved()) {
+                    continue;
                 }
+                boolean mine = mine(item, player);
+                // With clocks=own the client keeps its own estimate for everyone else's items
+                if (all || mine) {
+                    clocks.add(clock(item, mine));
+                }
+            }
+            if (clocks.isEmpty()) {
+                continue;
             }
             try {
                 for (byte[] message : ClockMessage.encodeAll(clocks)) {
@@ -127,7 +157,13 @@ public final class ServerClocks {
         }
     }
 
-    static ItemClock clock(ItemEntity item) {
-        return ItemClock.of(item.getId(), item.getAge(), Platform.lifespan(item), false, false);
+    static ItemClock clock(ItemEntity item, boolean mine) {
+        return ItemClock.of(item.getId(), item.getAge(), Platform.lifespan(item), false, mine);
+    }
+
+    /** Whether {@code player} dropped the item, by hand or when they died. */
+    static boolean mine(ItemEntity item, ServerPlayer player) {
+        Entity owner = item.getOwner();
+        return owner != null && owner.getUUID().equals(player.getUUID());
     }
 }

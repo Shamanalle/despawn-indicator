@@ -2,5 +2,12 @@
   "command.despawnindicator.status.title": "Despawn Indicator %s",
   "command.despawnindicator.status.players": "Joueurs avec le mod : %s sur %s en ligne. Ils voient exactement quand les objets au sol disparaissent.",
   "command.despawnindicator.status.lifetime": "Les objets lâchés disparaissent ici après %s.",
-  "modmenu.descriptionTranslation.despawnindicator": "Les objets au sol clignotent avant de disparaître et affichent le temps restant. Avec le mod aussi sur le serveur, le temps est exact."
+  "modmenu.descriptionTranslation.despawnindicator": "Les objets au sol clignotent avant de disparaître et affichent le temps restant. Avec le mod aussi sur le serveur, le temps est exact.",
+  "gui.despawnindicator.loot.title": "Le butin de ta mort disparaît dans %s",
+  "gui.despawnindicator.loot.paused": "en pause",
+  "gui.despawnindicator.loot.unlimited": "Le butin de ta mort ne disparaîtra pas",
+  "gui.despawnindicator.loot.distance": "%s blocs",
+  "gui.despawnindicator.dimension.overworld": "Surface",
+  "gui.despawnindicator.dimension.the_nether": "Nether",
+  "gui.despawnindicator.dimension.the_end": "L'End"
 }
