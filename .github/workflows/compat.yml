@@ -37,7 +37,10 @@ jobs:
         id: list
         run: |
           # module, its prefix in gradle.properties, its jar's suffix, the first and the last version (none: open)
-          bands='fabric-1.21 mc1210 mc1.21-1.21.1 1.21 1.21.1
+          bands='fabric-1.20 mc1200 mc1.20-1.20.1 1.20 1.20.1
+          fabric-1.20.2 mc1202 mc1.20.2-1.20.4 1.20.2 1.20.4
+          fabric-1.20.5 mc1205 mc1.20.5-1.20.6 1.20.5 1.20.6
+          fabric-1.21 mc1210 mc1.21-1.21.1 1.21 1.21.1
           fabric-1.21.2 mc1212 mc1.21.2-1.21.8 1.21.2 1.21.8
           fabric-1.21.9 mc1219 mc1.21.9-1.21.11 1.21.9 1.21.11
           fabric-26 mc26 mc26.x 26 -'

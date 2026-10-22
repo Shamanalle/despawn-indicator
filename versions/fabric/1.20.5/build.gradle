@@ -1,0 +1,9 @@
+plugins {
+    id 'fabric-loom' version '1.18.2'
+    id 'java'
+}
+
+// Minecraft 1.20.5 - 1.20.6 (Java 21), compiled against 1.20.6: payloads as on 1.21, the HUD callback of 1.20.
+// Fabric API for 1.20.x has no client gametest, so CI starts this band on a server only.
+ext.band = [target: 'mc1.20.5-1.20.6', props: 'mc1205', gametest: false]
+apply from: "${rootDir}/gradle/fabric-band.gradle"

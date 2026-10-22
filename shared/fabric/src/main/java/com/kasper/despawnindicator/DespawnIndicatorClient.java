@@ -1,19 +1,18 @@
 package com.kasper.despawnindicator;
 
 import com.kasper.despawnindicator.client.BlinkingItemRenderer;
+import com.kasper.despawnindicator.client.ClientNetworking;
 import com.kasper.despawnindicator.client.ClientTicker;
 import com.kasper.despawnindicator.client.LootHudHook;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 /** Client entrypoint: receives the clocks, counts them down, draws the items with their blinking and the death loot timer. */
 public class DespawnIndicatorClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        ClientPlayNetworking.registerGlobalReceiver(ModNetworking.Clocks.TYPE,
-                (payload, context) -> ClientTicker.receive(payload.data()));
+        ClientNetworking.register();
         ClientTickEvents.END_CLIENT_TICK.register(ClientTicker::tick);
         BlinkingItemRenderer.register();
         LootHudHook.register();

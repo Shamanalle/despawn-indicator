@@ -1,10 +1,13 @@
 package com.kasper.despawnindicator;
 
+import com.kasper.despawnindicator.server.ServerClocks;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 
 /**
  * The two channels on Fabric 1.21.x (payload API). A payload is the message's bytes as they are, the same
@@ -37,10 +40,28 @@ public final class ModNetworking {
     private ModNetworking() {
     }
 
-    /** Registers the payload types; runs on both sides. */
-    static void registerTypes() {
+    /** Registers the payload types and the server's receiver; runs on both sides. */
+    static void register() {
         PayloadTypeRegistry.playC2S().register(Hello.TYPE, Hello.CODEC);
         PayloadTypeRegistry.playS2C().register(Clocks.TYPE, Clocks.CODEC);
+        ServerPlayNetworking.registerGlobalReceiver(Hello.TYPE,
+                (payload, context) -> ServerClocks.hello(context.player(), payload.data()));
+    }
+
+    /** Sends a message on the clocks channel, if the player's client listens on it. */
+    public static void sendClocks(ServerPlayer player, byte[] message) {
+        if (ServerPlayNetworking.canSend(player, Clocks.TYPE)) {
+            ServerPlayNetworking.send(player, new Clocks(message));
+        }
+    }
+
+    /** The player's game language ("ru_ru"), as their client reported it. */
+    public static String language(ServerPlayer player) {
+        try {
+            return player.clientInformation().language();
+        } catch (Throwable t) {
+            return "";
+        }
     }
 
     private static ResourceLocation id(String path) {

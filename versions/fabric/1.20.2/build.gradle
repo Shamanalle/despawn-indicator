@@ -1,0 +1,9 @@
+plugins {
+    id 'fabric-loom' version '1.18.2'
+    id 'java'
+}
+
+// Minecraft 1.20.2 - 1.20.4 (Java 17), compiled against 1.20.4: channels by name instead of payloads.
+// Fabric API for 1.20.x has no client gametest, so CI starts this band on a server only.
+ext.band = [target: 'mc1.20.2-1.20.4', props: 'mc1202', java: 17, gametest: false]
+apply from: "${rootDir}/gradle/fabric-band.gradle"

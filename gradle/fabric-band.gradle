@@ -1,7 +1,8 @@
-// What the Fabric bands of Minecraft 1.21.x (versions/fabric/1.21*) share. A band's build.gradle applies the Loom
+// What the Fabric bands of Minecraft 1.20 - 1.21.11 (versions/fabric/1.2*) share. A band's build.gradle applies the Loom
 // and java plugins, then sets ext.band and applies this file:
 //   target   - the suffix of the band's jar (despawn-indicator-fabric-<version>+<target>.jar)
 //   props    - the prefix of its versions in gradle.properties (<props>_minecraft, _fabric_loader, _fabric_api)
+//   java     - the Java its Minecraft needs (17 or 21, default 21)
 //   gametest - whether the band runs the client gametest (Fabric API has it for 1.21.2 and later)
 // Fabric runs with intermediary names, which stay the same for a method whose signature does not change, so a
 // band's one jar runs on every version of its range.
@@ -37,14 +38,16 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.property(band.props + '_fabric_api')}"
 }
 
+def bandJava = band.java ?: 21
+
 tasks.withType(JavaCompile).configureEach {
-    options.release = 21
+    options.release = bandJava
     options.encoding = 'UTF-8'
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.toVersion(bandJava)
+    targetCompatibility = JavaVersion.toVersion(bandJava)
 }
 
 processResources {
@@ -90,7 +93,7 @@ if (band.gametest) {
     }
 }
 
-// The loader's Mixin for 1.21.x does not run on Java 25, so the dev clients and servers run on Java 21
+// The loader's Mixin for 1.20 - 1.21.x does not run on Java 25, so the dev clients and servers run on Java 21
 tasks.matching { it.name in ['runClient', 'runServer', 'runClientGameTest'] }.configureEach {
     javaLauncher = javaToolchains.launcherFor {
         languageVersion = JavaLanguageVersion.of(21)
