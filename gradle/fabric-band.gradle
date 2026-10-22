@@ -2,17 +2,20 @@
 // and java plugins, then sets ext.band and applies this file:
 //   target   - the suffix of the band's jar (despawn-indicator-fabric-<version>+<target>.jar)
 //   props    - the prefix of its versions in gradle.properties (<props>_minecraft, _fabric_loader, _fabric_api)
-//   java     - the Java its Minecraft needs (17 or 21, default 21)
+//   java     - the Java its Minecraft needs (16, 17 or 21, default 21)
 //   gametest - whether the band runs the client gametest (Fabric API has it for 1.21.2 and later)
-//   ownCompat - whether the band has its own Compat (Minecraft before 1.20) instead of the one in shared/mc-1.20
+//   ownCompat - whether the band brings its Compat (its own or from shared/, Minecraft before 1.20) instead of
+//              taking the one in shared/mc-1.20
 //   shared   - more directories of shared/ whose sources the band compiles (default none)
 //   commandV1 - whether the band registers its command with the v1 command API of Fabric API (Minecraft before
-//              1.19, the band has its own ModCommands) instead of shared/fabric-command-v2
+//              1.19, shared/fabric-command-v1) instead of the v2 one (shared/fabric-command-v2)
 // Fabric runs with intermediary names, which stay the same for a method whose signature does not change, so a
 // band's one jar runs on every version of its range.
 
-// Its jar carries the classes of ':common', so that module is configured first (configure-on-demand)
-evaluationDependsOn(':common')
+// Its jar carries the common classes, so that module is configured first (configure-on-demand). A band for
+// Java 16 takes them from ':common-j8', since the classes of ':common' are for Java 17.
+def commonProject = (band.java ?: 21) < 17 ? ':common-j8' : ':common'
+evaluationDependsOn(commonProject)
 
 version = "${project.mod_version}+${band.target}"
 
@@ -32,16 +35,14 @@ sourceSets {
             if (!band.ownCompat) {
                 srcDir "${rootDir}/shared/mc-1.20/src/main/java"
             }
-            if (!band.commandV1) {
-                srcDir "${rootDir}/shared/fabric-command-v2/src/main/java"
-            }
+            srcDir "${rootDir}/shared/fabric-command-v${band.commandV1 ? 1 : 2}/src/main/java"
             (band.shared ?: []).each { srcDir "${rootDir}/shared/${it}/src/main/java" }
         }
     }
 }
 
 dependencies {
-    implementation project(':common')
+    implementation project(commonProject)
 
     minecraft "com.mojang:minecraft:${project.property(band.props + '_minecraft')}"
     mappings loom.officialMojangMappings()
@@ -69,7 +70,7 @@ processResources {
 }
 
 jar {
-    from project(':common').sourceSets.main.output
+    from project(commonProject).sourceSets.main.output
 }
 
 remapJar {

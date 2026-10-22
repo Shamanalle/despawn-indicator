@@ -4,8 +4,7 @@ plugins {
 }
 
 // Minecraft 1.19 - 1.19.3 (Java 17), compiled against 1.19.2. 1.19.4 has a band of its own: it changed what
-// ItemEntity.getOwner returns. The rest of the band's code is in shared/fabric-1.18 and
-// shared/mc-1.19. Fabric API for 1.19.x has
-// no client gametest, so CI starts this band on a server only.
-ext.band = [target: 'mc1.19-1.19.3', props: 'mc1190', java: 17, gametest: false, ownCompat: true, shared: ['fabric-1.18', 'mc-1.19']]
+// ItemEntity.getOwner returns. The rest of the band's code is in shared/fabric-1.17 and shared/mc-1.19.
+// Fabric API for 1.19.x has no client gametest, so CI starts this band on a server only.
+ext.band = [target: 'mc1.19-1.19.3', props: 'mc1190', java: 17, gametest: false, ownCompat: true, shared: ['fabric-1.17', 'mc-1.19']]
 apply from: "${rootDir}/gradle/fabric-band.gradle"

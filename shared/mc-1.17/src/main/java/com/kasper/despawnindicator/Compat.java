@@ -9,7 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 
-/** The Minecraft calls of the shared code that changed in 1.19, 1.19.4 and 1.20, as they are on 1.18.2. */
+/** The Minecraft calls of the shared code that changed in 1.19, 1.19.4 and 1.20, as they are on 1.17.1 - 1.18.2. */
 public final class Compat {
 
     private Compat() {
