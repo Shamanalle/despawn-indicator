@@ -3,7 +3,7 @@ name: Minecraft 26.x compatibility
 # Checks the 26.x jar on every 26.x release of Minecraft, not only the one it is built against:
 # 1. the jar built for gradle.properties' mc26_minecraft links against that version and its latest
 #    Fabric API: every class, method, field, override and abstract method it uses resolves the same
-#    way (LinkCheck.java);
+#    way (LinkCheck.java), apart from the reviewed differences in linkcheck-allowed-26.txt;
 # and, for information, whether the sources also compile against that version.
 # The Minecraft versions come from Mojang's version list, the Fabric API versions from Fabric's maven.
 
@@ -16,6 +16,7 @@ on:
       - 'common/src/main/**'
       - 'gradle.properties'
       - '.github/scripts/LinkCheck.java'
+      - '.github/scripts/linkcheck-allowed-26.txt'
       - '.github/scripts/linkcheck-selftest.sh'
       - '.github/workflows/compat-26.yml'
   workflow_dispatch:
@@ -109,7 +110,8 @@ jobs:
         run: |
           set -o pipefail
           java .github/scripts/LinkCheck.java "${RUNNER_TEMP}/mod.jar" \
-            "${RUNNER_TEMP}/reference-classpath.txt" "${RUNNER_TEMP}/target-classpath.txt" | tee "${RUNNER_TEMP}/link.txt"
+            "${RUNNER_TEMP}/reference-classpath.txt" "${RUNNER_TEMP}/target-classpath.txt" \
+            .github/scripts/linkcheck-allowed-26.txt | tee "${RUNNER_TEMP}/link.txt"
 
       - name: Result
         env:
