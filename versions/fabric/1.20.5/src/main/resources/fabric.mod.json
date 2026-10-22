@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "despawnindicator",
+  "version": "${version}",
+  "name": "Despawn Indicator",
+  "icon": "assets/despawnindicator/icon.png",
+  "description": "Items on the ground blink before they despawn and show the time left. With the mod on the server too, the time is exact.",
+  "authors": [
+    "Shamanalle"
+  ],
+  "contact": {
+    "homepage": "https://github.com/Shamanalle/despawn-indicator",
+    "sources": "https://github.com/Shamanalle/despawn-indicator",
+    "issues": "https://github.com/Shamanalle/despawn-indicator/issues"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.kasper.despawnindicator.DespawnIndicatorMod"
+    ],
+    "client": [
+      "com.kasper.despawnindicator.DespawnIndicatorClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "fabric-api": "*",
+    "minecraft": ">=1.20.5 <=1.20.6",
+    "java": ">=21"
+  }
+}

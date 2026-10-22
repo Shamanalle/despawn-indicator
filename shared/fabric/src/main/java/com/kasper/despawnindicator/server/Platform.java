@@ -2,14 +2,13 @@ package com.kasper.despawnindicator.server;
 
 import com.kasper.despawnindicator.DespawnIndicator;
 import com.kasper.despawnindicator.ModNetworking;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 
 import java.nio.file.Path;
 
-/** What the shared server code needs from the loader (Fabric). */
+/** What the shared server code needs from the loader (Fabric). The channels are the band's own ({@link ModNetworking}). */
 public final class Platform {
 
     private Platform() {
@@ -20,19 +19,13 @@ public final class Platform {
         return DespawnIndicator.VANILLA_LIFETIME;
     }
 
-    /** The player's game language ("ru_ru"), as their client reported it. */
+    /** The player's game language ("ru_ru"), as their client reported it; empty where the server does not keep it. */
     public static String language(ServerPlayer player) {
-        try {
-            return player.clientInformation().language();
-        } catch (Throwable t) {
-            return "";
-        }
+        return ModNetworking.language(player);
     }
 
     public static void send(ServerPlayer player, byte[] message) {
-        if (ServerPlayNetworking.canSend(player, ModNetworking.Clocks.TYPE)) {
-            ServerPlayNetworking.send(player, new ModNetworking.Clocks(message));
-        }
+        ModNetworking.sendClocks(player, message);
     }
 
     /** The game's config folder. */

@@ -8,7 +8,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,9 +28,7 @@ public class DespawnIndicatorMod implements ModInitializer {
                 log.warn(message);
             }
         });
-        ModNetworking.registerTypes();
-        ServerPlayNetworking.registerGlobalReceiver(ModNetworking.Hello.TYPE,
-                (payload, context) -> ServerClocks.hello(context.player(), payload.data()));
+        ModNetworking.register();
         EntityTrackingEvents.START_TRACKING.register(ServerClocks::startTracking);
         ServerTickEvents.END_SERVER_TICK.register(ServerClocks::endTick);
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> ServerClocks.left(handler.player));
