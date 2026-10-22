@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - A plugin for Paper, Folia and Spigot servers, Minecraft 1.16.5 and newer: put it into `plugins/` and players with the mod get exact item times and the exact death timer, the same as with the mod on the server. Players without the mod can still join. `/despawnindicator` works there too, and the server settings file is `plugins/DespawnIndicator/despawnindicator-server.properties`.
 - A fading style: instead of blinking, items shrink and grow back during their last seconds, faster toward the end, and never vanish completely; the death timer fades in and out. It works with shaders. Turn it on with `style=fade` in `config/despawnindicator-client.properties`.
 - The Fabric/Quilt file now also works on Minecraft 1.16.5, 1.17.1 and 1.18.2 – 1.20.6. On 1.16.5 – 1.20.1 `/despawnindicator` answers in English, because these versions do not tell the server the player's language.
+- The Forge/NeoForge file now also works with NeoForge on Minecraft 1.21.2 – 1.21.11 and 26.1 – 26.3.
 
 ### Русский
 
@@ -27,6 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Плагин для серверов Paper, Folia и Spigot, Minecraft 1.16.5 и новее: положите его в `plugins/`, и игроки с модом получат точное время предметов и точный таймер после смерти, как с модом на сервере. Игроки без мода по-прежнему могут заходить. `/despawnindicator` там тоже работает, а файл настроек сервера — `plugins/DespawnIndicator/despawnindicator-server.properties`.
 - Стиль с затуханием: вместо мигания предметы в последние секунды уменьшаются и снова растут, к концу всё чаще, но совсем не пропадают; таймер после смерти плавно гаснет и появляется. Работает с шейдерами. Включается строкой `style=fade` в `config/despawnindicator-client.properties`.
 - Файл для Fabric/Quilt теперь работает и на Minecraft 1.16.5, 1.17.1 и 1.18.2 – 1.20.6. На 1.16.5 – 1.20.1 `/despawnindicator` отвечает по-английски: эти версии не сообщают серверу язык игрока.
+- Файл для Forge/NeoForge теперь работает и с NeoForge на Minecraft 1.21.2 – 1.21.11 и 26.1 – 26.3.
 
 ## [0.1.0] - 2026-10-22
 

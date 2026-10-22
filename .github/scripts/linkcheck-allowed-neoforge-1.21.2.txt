@@ -1,0 +1,8 @@
+# Differences between NeoForge 21.5 (the reference, Minecraft 1.21.5) and older NeoForge 21.2 - 21.4 that were
+# reviewed and are safe. One key per line as LinkCheck prints it after "DIFF".
+
+# 1.21.4 put a parent class above the item's render state, and NeoForge 21.3 one above every render state.
+# FadeState extends the item's render state itself and uses nothing of those parents, so it works with or without them.
+ancestor of com/kasper/despawnindicator/client/BlinkingItemRenderer$FadeState: net/minecraft/client/renderer/entity/state/ItemClusterRenderState
+ancestor of com/kasper/despawnindicator/client/BlinkingItemRenderer$FadeState: net/neoforged/neoforge/client/extensions/IRenderStateExtension
+ancestor of com/kasper/despawnindicator/client/BlinkingItemRenderer$FadeState: net/neoforged/neoforge/client/renderstate/BaseRenderState

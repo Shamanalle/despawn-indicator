@@ -63,6 +63,12 @@ jobs:
         include:
           - { module: forge-1.20.1, key: forge120_version_oldest }
           - { module: neoforge-1.21, key: nf121_neoforge_oldest }
+          - { module: neoforge-1.21.2, key: nf1212_neoforge_oldest }
+          - { module: neoforge-1.21.9, key: nf1219_neoforge_oldest }
+          - { module: neoforge-1.21.11, key: nf12111_neoforge_oldest }
+          # No neoforge-1.21.6 and neoforge-26: they call classes the oldest NeoForge lacks where they run only on
+          # newer versions (ClientPlatform, GuiCanvas), so they cannot compile against it; NeoForge compatibility
+          # checks them there instead
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -1,0 +1,31 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "MIT"
+issueTrackerURL = "https://github.com/Shamanalle/despawn-indicator/issues"
+
+[[mods]]
+modId = "despawnindicator"
+version = "${version}"
+displayName = "Despawn Indicator"
+displayURL = "https://github.com/Shamanalle/despawn-indicator"
+logoFile = "assets/despawnindicator/icon.png"
+authors = "Shamanalle"
+description = '''
+Items on the ground blink before they despawn and show the time left. With the mod on the server too, the time is exact.
+
+Предметы на земле мигают перед исчезновением и показывают, сколько им осталось. Если мод стоит и на сервере, время точное.
+'''
+
+[[dependencies.despawnindicator]]
+modId = "neoforge"
+type = "required"
+versionRange = "[26.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.despawnindicator]]
+modId = "minecraft"
+type = "required"
+versionRange = "[26.1,27)"
+ordering = "NONE"
+side = "BOTH"
