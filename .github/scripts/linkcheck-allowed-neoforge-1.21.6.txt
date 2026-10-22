@@ -1,0 +1,7 @@
+# Differences between NeoForge 21.8 (the reference) and older NeoForge of the band that were reviewed and are safe.
+# One key per line as LinkCheck prints it after "DIFF".
+
+# ClientPacketDistributor came in NeoForge 21.7. On 21.6 ClientPlatform sends through the PacketDistributor.sendToServer
+# of 21.6 instead (a method handle) and never reaches these
+method net/neoforged/neoforge/client/network/ClientPacketDistributor.sendToServer(Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload;[Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload;)V
+type net/neoforged/neoforge/client/network/ClientPacketDistributor
