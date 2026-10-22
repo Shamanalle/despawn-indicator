@@ -68,6 +68,11 @@ jobs:
                 le "${mc}" "${last}" || continue
               fi
               api=$(grep -oP "<version>\K[^<]*\+${mc//./\\.}(?=</version>)" <<< "${meta}" | sort -V | tail -1 || true)
+              # Fabric API for 1.17.1 is published for 1.17 (0.46.1+1.17): fall back to the version without its last number
+              if [ -z "${api}" ] && [ "${mc}" != "${mc%.*.*}" ]; then
+                minor=${mc%.*}
+                api=$(grep -oP "<version>\K[^<]*\+${minor//./\\.}(?=</version>)" <<< "${meta}" | sort -V | tail -1 || true)
+              fi
               if [ -z "${api}" ]; then
                 echo "::warning::No Fabric API for Minecraft ${mc}; skipped"
                 continue
