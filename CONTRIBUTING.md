@@ -16,7 +16,7 @@ git clone https://github.com/Shamanalle/despawn-indicator.git
 cd despawn-indicator
 ./gradlew :common:test             # fast: protocol, countdown, texts, translations
 ./gradlew build                    # every target, the two jars in build/libs/
-./gradlew :fabric-1.21.2:runClient   # or :fabric-1.16, :fabric-1.17, :fabric-1.18, :fabric-1.19, :fabric-1.19.4, :fabric-1.20, :fabric-1.20.2, :fabric-1.20.5, :fabric-1.21, :fabric-1.21.9, :fabric-26, :forge-1.20.1, :neoforge-1.21; runServer for the server side
+./gradlew :fabric-1.21.2:runClient   # or :fabric-1.16, :fabric-1.17, :fabric-1.18, :fabric-1.19, :fabric-1.19.4, :fabric-1.20, :fabric-1.20.2, :fabric-1.20.5, :fabric-1.21, :fabric-1.21.9, :fabric-26, :forge-1.20.1, :neoforge-1.21, :neoforge-1.21.2, :neoforge-1.21.6, :neoforge-1.21.9, :neoforge-1.21.11, :neoforge-26; runServer for the server side
 ```
 
 ### Where code lives
@@ -30,14 +30,14 @@ cd despawn-indicator
 | `shared/fabric-slf4j/` | the Fabric bands from 1.17 on | `LogSink`: the mod's log through SLF4J (1.16.5 has only Log4j and brings its own) |
 | `shared/fabric-command-v1/` | `fabric-1.16`, `fabric-1.17`, `fabric-1.18` | `ModCommands`: registers `/despawnindicator` with the command API v1 of Fabric API, the only one before 1.19 |
 | `shared/fabric-command-v2/` | the Fabric bands from 1.19 on | `ModCommands`: the same with the command API v2 |
-| `shared/mc-1.20/` | the Fabric bands from 1.20 on, `fabric-26`, `forge-1.20.1`, `neoforge-1.21` | `Compat`: calls whose names or types changed in 1.19.4 or 1.20 (texts, the player's level, command replies, an item's owner) |
+| `shared/mc-1.20/` | the Fabric bands from 1.20 on, `fabric-26`, `forge-1.20.1`, the NeoForge bands | `Compat`: calls whose names or types changed in 1.19.4 or 1.20 (texts, the player's level, command replies, an item's owner) |
 | `shared/fabric-1.16/` | `fabric-1.16`, `fabric-1.17`, `fabric-1.18`, `fabric-1.19`, `fabric-1.19.4` | the channels and the HUD of 1.16.5 – 1.19.4 (`PoseStack` and `GuiComponent` instead of `GuiGraphics`) |
 | `shared/fabric-1.17/` | `fabric-1.17`, `fabric-1.18`, `fabric-1.19`, `fabric-1.19.4` | the item renderer of 1.17.1 – 1.19.4 |
 | `shared/mc-1.17/` | `fabric-1.17`, `fabric-1.18` | `Compat` and `ClientCompat`: texts and the note sound of 1.17.1 – 1.18.2 |
 | `shared/mc-1.19/` | `fabric-1.19`, `fabric-1.19.4` | `ClientCompat`: the note sound of 1.19.x |
 | `shared/gametest/` | `fabric-1.21.2`, `fabric-1.21.9`, `fabric-26` (client gametest) | drops items in a real world, checks their times and takes screenshots |
 | `versions/fabric/<band>/` (`1.16`, `1.17`, `1.18`, `1.19`, `1.19.4`, `1.20`, `1.20.2`, `1.20.5`, `1.21`, `1.21.2`, `1.21.9`, `26`) | the Fabric / Quilt jar; the Gradle project is `:fabric-<band>` | the two channels and the player's language (`ModNetworking`, `client/ClientNetworking`: channels by name before 1.20.5, payloads from 1.20.5, other names in 26.x), the item renderer and the HUD hook (they changed in 1.21, 1.21.2 and 1.21.9), `fabric.mod.json` |
-| `versions/forge/1.20.1/`, `versions/neoforge/1.21/` | the Forge / NeoForge jar; projects `:forge-1.20.1`, `:neoforge-1.21` | Forge and NeoForge hooks (`forge/`, `neoforge/`: entry, networking on the same channels and bytes, client), `Platform` with item lifespans, `mods.toml` / `neoforge.mods.toml`. Forge 1.20.1 runs with SRG names, so that band is remapped by `reobfJar` |
+| `versions/forge/1.20.1/`, `versions/neoforge/<band>/` | the Forge / NeoForge jar; projects `:forge-1.20.1`, `:neoforge-1.21` (1.21 – 1.21.1), `:neoforge-1.21.2` (– 1.21.5), `:neoforge-1.21.6` (– 1.21.8), `:neoforge-1.21.9` (– 1.21.10), `:neoforge-1.21.11`, `:neoforge-26` (26.x, compiled to Java 21 class files: Forge 1.20.1 reads every class of the jar) | Forge and NeoForge hooks (`forge/`, `neoforge/`: entry, networking on the same channels and bytes, client), `Platform` with item lifespans, `mods.toml` / `neoforge.mods.toml`. Forge 1.20.1 runs with SRG names, so that band is remapped by `reobfJar` |
 | `universal/` | both jars | the dispatchers that pick a band at startup (`BandAdapter` for Fabric, `ForgeDispatcher` / `NeoForgeDispatcher`) |
 | `packaging/` | build only | `MergeJars`: merges the band jars into one, stores shared classes once and moves each band's own classes under `b/<band>/` |
 
@@ -71,7 +71,7 @@ The repository description and topics live in `.github/about.json`. The *Reposit
 - Logs and screenshots are attached to each run as artifacts.
 - **Network failures:** a download that fails on the way (a timeout, a reset connection, HTTP 429 / 5xx) is tried once more and leaves a warning on the run: the build and the client before the game starts (`.github/scripts/net-retry.sh`, the second time with Maven Central through Google's mirror), the server's installer and first start. A failing test, a compile error and a missing file (404) fail at once.
 
-*Build & Verify* also compiles the Forge and NeoForge bands against the oldest loader they claim, and *Fabric compatibility* checks that each Fabric band's jar links against every release of its range (`LinkCheck.java`).
+*Build & Verify* also compiles the Forge and NeoForge bands against the oldest loader they claim, *Fabric compatibility* checks that each Fabric band's jar links against every release of its range (`LinkCheck.java`), and *NeoForge compatibility* checks each NeoForge band on the newest NeoForge of every Minecraft version of its range and on the oldest it allows (reviewed differences go to `.github/scripts/linkcheck-allowed-neoforge-<band>.txt`).
 
 ### Releases
 
@@ -108,7 +108,7 @@ git clone https://github.com/Shamanalle/despawn-indicator.git
 cd despawn-indicator
 ./gradlew :common:test             # быстро: протокол, отсчёт, тексты, переводы
 ./gradlew build                    # все версии, два jar в build/libs/
-./gradlew :fabric-1.21.2:runClient   # или :fabric-1.16, :fabric-1.17, :fabric-1.18, :fabric-1.19, :fabric-1.19.4, :fabric-1.20, :fabric-1.20.2, :fabric-1.20.5, :fabric-1.21, :fabric-1.21.9, :fabric-26, :forge-1.20.1, :neoforge-1.21; runServer для сервера
+./gradlew :fabric-1.21.2:runClient   # или :fabric-1.16, :fabric-1.17, :fabric-1.18, :fabric-1.19, :fabric-1.19.4, :fabric-1.20, :fabric-1.20.2, :fabric-1.20.5, :fabric-1.21, :fabric-1.21.9, :fabric-26, :forge-1.20.1, :neoforge-1.21, :neoforge-1.21.2, :neoforge-1.21.6, :neoforge-1.21.9, :neoforge-1.21.11, :neoforge-26; runServer для сервера
 ```
 
 ### Где какой код
@@ -122,14 +122,14 @@ cd despawn-indicator
 | `shared/fabric-slf4j/` | в полосы Fabric с 1.17 | `LogSink`: лог мода через SLF4J (в 1.16.5 есть только Log4j, и у полосы свой) |
 | `shared/fabric-command-v1/` | `fabric-1.16`, `fabric-1.17`, `fabric-1.18` | `ModCommands`: регистрирует `/despawnindicator` через командный API v1 из Fabric API, единственный до 1.19 |
 | `shared/fabric-command-v2/` | в полосы Fabric с 1.19 | `ModCommands`: то же через командный API v2 |
-| `shared/mc-1.20/` | в полосы Fabric с 1.20, `fabric-26`, `forge-1.20.1`, `neoforge-1.21` | `Compat`: вызовы, у которых в 1.19.4 или 1.20 изменились имена или типы (тексты, мир игрока, ответы команды, владелец предмета) |
+| `shared/mc-1.20/` | в полосы Fabric с 1.20, `fabric-26`, `forge-1.20.1`, полосы NeoForge | `Compat`: вызовы, у которых в 1.19.4 или 1.20 изменились имена или типы (тексты, мир игрока, ответы команды, владелец предмета) |
 | `shared/fabric-1.16/` | `fabric-1.16`, `fabric-1.17`, `fabric-1.18`, `fabric-1.19`, `fabric-1.19.4` | каналы и HUD для 1.16.5 – 1.19.4 (`PoseStack` и `GuiComponent` вместо `GuiGraphics`) |
 | `shared/fabric-1.17/` | `fabric-1.17`, `fabric-1.18`, `fabric-1.19`, `fabric-1.19.4` | отрисовка предметов для 1.17.1 – 1.19.4 |
 | `shared/mc-1.17/` | `fabric-1.17`, `fabric-1.18` | `Compat` и `ClientCompat`: тексты и звук ноты для 1.17.1 – 1.18.2 |
 | `shared/mc-1.19/` | `fabric-1.19`, `fabric-1.19.4` | `ClientCompat`: звук ноты для 1.19.x |
 | `shared/gametest/` | `fabric-1.21.2`, `fabric-1.21.9`, `fabric-26` (клиентский gametest) | бросает предметы в настоящем мире, проверяет их время и делает скриншоты |
 | `versions/fabric/<полоса>/` (`1.16`, `1.17`, `1.18`, `1.19`, `1.19.4`, `1.20`, `1.20.2`, `1.20.5`, `1.21`, `1.21.2`, `1.21.9`, `26`) | jar для Fabric / Quilt; проект Gradle `:fabric-<полоса>` | два канала и язык игрока (`ModNetworking`, `client/ClientNetworking`: до 1.20.5 каналы по имени, с 1.20.5 пакеты-payload, в 26.x другие имена), отрисовщик предметов и подключение к HUD (менялись в 1.21, 1.21.2 и 1.21.9), `fabric.mod.json` |
-| `versions/forge/1.20.1/`, `versions/neoforge/1.21/` | jar для Forge / NeoForge; проекты `:forge-1.20.1`, `:neoforge-1.21` | обработчики Forge и NeoForge (`forge/`, `neoforge/`: вход, сеть на тех же каналах и байтах, клиент), `Platform` со временем жизни предметов, `mods.toml` / `neoforge.mods.toml`. Forge 1.20.1 работает с именами SRG, поэтому эта полоса перемаппится `reobfJar` |
+| `versions/forge/1.20.1/`, `versions/neoforge/<полоса>/` | jar для Forge / NeoForge; проекты `:forge-1.20.1`, `:neoforge-1.21` (1.21 – 1.21.1), `:neoforge-1.21.2` (– 1.21.5), `:neoforge-1.21.6` (– 1.21.8), `:neoforge-1.21.9` (– 1.21.10), `:neoforge-1.21.11`, `:neoforge-26` (26.x, собирается в классы Java 21: Forge 1.20.1 читает каждый класс jar) | обработчики Forge и NeoForge (`forge/`, `neoforge/`: вход, сеть на тех же каналах и байтах, клиент), `Platform` со временем жизни предметов, `mods.toml` / `neoforge.mods.toml`. Forge 1.20.1 работает с именами SRG, поэтому эта полоса перемаппится `reobfJar` |
 | `universal/` | в оба jar | диспетчеры, выбирающие полосу при запуске (`BandAdapter` для Fabric, `ForgeDispatcher` / `NeoForgeDispatcher`) |
 | `packaging/` | только сборка | `MergeJars`: собирает jar полос в один, общие классы кладёт один раз, а собственные классы каждой полосы переносит в `b/<полоса>/` |
 
@@ -163,7 +163,7 @@ README состоит из двух файлов: `README.md` на англий�
 - Логи и скриншоты прикладываются к каждому запуску как артефакты.
 - **Сбои сети:** загрузка, сорвавшаяся по дороге (таймаут, разрыв соединения, HTTP 429 / 5xx), повторяется один раз и оставляет предупреждение: сборка и клиент до запуска игры (`.github/scripts/net-retry.sh`, второй раз — Maven Central через зеркало Google), установщик сервера и его первый запуск. Упавший тест, ошибка компиляции и отсутствующий файл (404) сразу дают ошибку.
 
-*Build & Verify* ещё компилирует полосы Forge и NeoForge против самого старого заявленного загрузчика, а *Fabric compatibility* проверяет, что jar каждой полосы Fabric линкуется с каждым выпуском её диапазона (`LinkCheck.java`).
+*Build & Verify* ещё компилирует полосы Forge и NeoForge против самого старого заявленного загрузчика, *Fabric compatibility* проверяет, что jar каждой полосы Fabric линкуется с каждым выпуском её диапазона (`LinkCheck.java`), а *NeoForge compatibility* проверяет каждую полосу NeoForge на новейшем NeoForge каждой версии Minecraft её диапазона и на самом старом допустимом (проверенные различия записываются в `.github/scripts/linkcheck-allowed-neoforge-<полоса>.txt`).
 
 ### Релизы
 

@@ -63,6 +63,10 @@ jobs:
         include:
           - { module: forge-1.20.1, key: forge120_version_oldest }
           - { module: neoforge-1.21, key: nf121_neoforge_oldest }
+          - { module: neoforge-1.21.2, key: nf1212_neoforge_oldest }
+          - { module: neoforge-1.21.6, key: nf1216_neoforge_oldest }
+          - { module: neoforge-1.21.9, key: nf1219_neoforge_oldest }
+          - { module: neoforge-1.21.11, key: nf12111_neoforge_oldest }
     steps:
       - name: Checkout
         uses: actions/checkout@v4

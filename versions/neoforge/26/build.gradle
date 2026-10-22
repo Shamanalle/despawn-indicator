@@ -1,0 +1,75 @@
+plugins {
+    id 'net.neoforged.moddev' version '2.0.147'
+    id 'java'
+}
+
+// Its jar carries the classes of ':common', so that module is configured first (configure-on-demand)
+evaluationDependsOn(':common')
+
+// NeoForge 26.x. NeoForge runs with Minecraft's own names, so the code shared with the other bands is
+// compiled here as it is; only the hooks into NeoForge (package com.kasper.despawnindicator.neoforge) and
+// Platform are NeoForge's own.
+def target = "mc26.x"
+version = "${project.mod_version}+${target}"
+
+base {
+    archivesName = "despawn-indicator-neoforge"
+}
+
+repositories {
+    mavenCentral()
+}
+
+// The build against the oldest NeoForge of the band (.github/workflows/build.yml) passes -PloaderOverride.<module>=<version>
+neoForge {
+    version = project.findProperty("loaderOverride.${project.name}") ?: project.nf26_neoforge
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "${rootDir}/shared/mc/src/main/java"
+            srcDir "${rootDir}/shared/mc-1.20/src/main/java"
+        }
+    }
+}
+
+dependencies {
+    implementation project(':common')
+}
+
+// Java 21 class files, though Minecraft 26.x needs Java 25: the universal jar it goes into is also read by Forge 1.20.1,
+// whose ASM stops at Java 21 (see forgeBands in the root build.gradle)
+tasks.withType(JavaCompile).configureEach {
+    options.release = 21
+    options.encoding = 'UTF-8'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+processResources {
+    inputs.property "version", project.version
+    filesMatching("META-INF/neoforge.mods.toml") {
+        expand "version": project.version
+    }
+}
+
+jar {
+    from project(':common').sourceSets.main.output
+}
+
+// The classpath with Minecraft's own names, the ones the released jar runs with: Minecraft and NeoForge as one jar,
+// their libraries. The compatibility check (.github/workflows/compat-neoforge.yml) compares the jar against it for each
+// NeoForge version of the band.
+tasks.register('writeCompileClasspath') {
+    dependsOn "createMinecraftArtifacts"
+    def out = layout.buildDirectory.file('compile-classpath.txt')
+    outputs.file out
+    outputs.upToDateWhen { false }
+    doLast {
+        out.get().asFile.text = configurations.compileClasspath.files.join('\n') + '\n'
+    }
+}

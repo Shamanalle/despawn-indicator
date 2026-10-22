@@ -58,3 +58,16 @@ processResources {
 jar {
     from project(':common').sourceSets.main.output
 }
+
+// The classpath with Minecraft's own names, the ones the released jar runs with: Minecraft and NeoForge as one jar,
+// their libraries. The compatibility check (.github/workflows/compat-neoforge.yml) compares the jar against it for each
+// NeoForge version of the band.
+tasks.register('writeCompileClasspath') {
+    dependsOn "createMinecraftArtifacts"
+    def out = layout.buildDirectory.file('compile-classpath.txt')
+    outputs.file out
+    outputs.upToDateWhen { false }
+    doLast {
+        out.get().asFile.text = configurations.compileClasspath.files.join('\n') + '\n'
+    }
+}

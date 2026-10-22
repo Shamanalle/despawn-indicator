@@ -29,10 +29,16 @@ def fabricUniversalName = "despawn-indicator-fabric-${project.mod_version}+mc1.1
 def forgeBands = [
         [id: 'forge_1_20_1', project: ':forge-1.20.1', task: 'reobfJar', loader: 'forge', java: 61],
         [id: 'neoforge_1_21', project: ':neoforge-1.21', loader: 'neoforge', java: 65],
+        [id: 'neoforge_1_21_2', project: ':neoforge-1.21.2', loader: 'neoforge', java: 65],
+        [id: 'neoforge_1_21_6', project: ':neoforge-1.21.6', loader: 'neoforge', java: 65],
+        [id: 'neoforge_1_21_9', project: ':neoforge-1.21.9', loader: 'neoforge', java: 65],
+        [id: 'neoforge_1_21_11', project: ':neoforge-1.21.11', loader: 'neoforge', java: 65],
+        // Minecraft 26.x runs on Java 25, but the band is compiled to Java 21 class files (see above)
+        [id: 'neoforge_26', project: ':neoforge-26', loader: 'neoforge', java: 65],
 ].each { band ->
     band.toml = band.toml ?: (band.loader == 'forge' ? 'META-INF/mods.toml' : 'META-INF/neoforge.mods.toml')
 }
-def forgeUniversalName = "despawn-indicator-forge-neoforge-${project.mod_version}+mc1.20.1-1.21.1.jar"
+def forgeUniversalName = "despawn-indicator-forge-neoforge-${project.mod_version}+mc1.20.1-26.x.jar"
 
 // The universal jars: MergeJars (packaging/) puts the common classes in once and moves each band's glue to
 // com/kasper/despawnindicator/b/<band>/; the dispatchers (universal/) pick the band at startup
